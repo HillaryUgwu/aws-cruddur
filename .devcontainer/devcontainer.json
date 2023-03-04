@@ -12,10 +12,12 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-vscode.Theme-PredawnKit",
 				"ms-python.python",
 				"ms-azuretools.vscode-docker"
-			]
+			],
+			"settings": {
+				"workbench.colorTheme": "Default Dark+ Experimental"
+			}
 		}
 	}
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
