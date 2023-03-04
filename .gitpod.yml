@@ -14,7 +14,7 @@ tasks:
       cd frontend-react-js
       npm i
       cd ..
-      
+
   - name: postgres
     init: |
       curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
@@ -26,6 +26,8 @@ vscode:
   extensions:
     - 42Crunch.vscode-openapi
     - cweijan.vscode-postgresql-client2
+
+    - ms-vscode.Theme-PredawnKit
 
 ports:
   - name: frontend
