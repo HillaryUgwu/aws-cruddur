@@ -17,6 +17,7 @@ import {
 
 // configure Amplify
 import { Amplify } from 'aws-amplify';
+import { Provider, ErrorBoundary } from '@rollbar/react'; // Provider imports 'rollbar'
 
 Amplify.configure({
   "AWS_PROJECT_REGION": process.env.REACT_APP_AWS_PROJECT_REGION,
@@ -32,6 +33,11 @@ Amplify.configure({
     userPoolWebClientId: process.env.REACT_APP_CLIENT_ID,   // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
   }
 });
+
+const rollbarConfig = {
+  accessToken: 'ROLLBAR_ACCESS_TOKEN_FRONTEND',
+  environment: 'testenv',
+};
 
 const router = createBrowserRouter([
   {
@@ -72,11 +78,19 @@ const router = createBrowserRouter([
   }
 ]);
 
+function TestError() {
+  const a = null;
+  return a.hello();
+}
+
 function App() {
   return (
-    <>
-      <RouterProvider router={router} />
-    </>
+    <Provider config={rollbarConfig}>
+      <ErrorBoundary>
+        <RouterProvider router={router} />
+        {/* <TestError /> */}
+      </ErrorBoundary>
+    </Provider>
   );
 }
 
