@@ -164,18 +164,16 @@ def data_home():
   access_token = extract_access_token(request.headers)
   try:
       claims = cognito_jwt_token.verify(access_token)
-      # CognitoJwtToken.claims = CognitoJwtToken.token_service.claims
-      # g.cognito_claims = CognitoJwtToken.claims
-      app.logger.debug("authenticated")
-      app.logger.debug()
-
+      # authenicatied request
+      app.logger.debug("authenicated")
+      # app.logger.debug(claims)
+      app.logger.debug(claims['username'])
+      data = HomeActivities.run(cognito_user_id=claims['username'])
   except TokenVerifyError as e:
-      # _ = request.data
-      app.logger.debug("unauthenticated")
-      # abort(make_response(jsonify(message=str(e)), 401))
-
-  data = HomeActivities.run()
-  # data = HomeActivities.run(LOGGER)
+    # unauthenicatied request
+    app.logger.debug(e)
+    app.logger.debug("unauthenicated")
+    data = HomeActivities.run()
   return data, 200
 
 @app.route("/api/activities/notifications", methods=['GET'])
