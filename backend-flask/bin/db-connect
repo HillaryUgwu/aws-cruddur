@@ -8,4 +8,4 @@ else
     echo "Running in development mode"
 fi
 
-psql $CONNECTION_URL
+psql $URL
