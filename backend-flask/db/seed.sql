@@ -1,6 +1,7 @@
 -- this file was manually created
 INSERT INTO public.users (display_name, handle, email, cognito_user_id)
 VALUES
+  ('Hillary Ugwu', 'ohahuru', 'ohary37@gmail.com' ,'MOCK'),
   ('Andrew Brown', 'andrewbrown', 'email@example.com' ,'MOCK'),
   ('Andrew Bayko', 'bayko','email@example.com' ,'MOCK');
 
