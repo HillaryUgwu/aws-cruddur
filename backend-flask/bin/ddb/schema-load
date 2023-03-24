@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 
 import boto3
 import sys
@@ -12,13 +12,13 @@ if len(sys.argv) == 2:
         attrs = {}
 
 
-ddb = boto3.client('dynamodb',**atttrs
+ddb = boto3.client('dynamodb',**attrs
 )
 
 table_name = 'cruddur-message'
 
 # define the schema for the table
-table = ddb.create_table(
+response = ddb.create_table(
     TableName=table_name,
     AttributeDefinitions=[
         {
@@ -47,12 +47,6 @@ table = ddb.create_table(
         'ReadCapacityUnits': 5,
         'WriteCapacityUnits': 5
     }
-)
-
-# create the table
-response = dynamodb.create_table(
-    TableName=table_name,
-    **table_schema
 )
 
 # print the response
