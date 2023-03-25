@@ -14,6 +14,10 @@ tasks:
       cd frontend-react-js
       npm i
       cd ..
+  - name: flask
+    command: |
+      cd backend-flask
+      pip install -r requirement.txt
 
   - name: postgres
     init: |
