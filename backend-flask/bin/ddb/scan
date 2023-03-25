@@ -6,7 +6,7 @@ attrs = {
   'endpoint_url': 'http://localhost:8000'
 }
 ddb = boto3.resource('dynamodb',**attrs)
-table_name = 'cruddur-message'
+table_name = 'cruddur-messages'
 
 table = ddb.Table(table_name)
 response = table.scan()
