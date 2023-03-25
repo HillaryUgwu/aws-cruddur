@@ -13,7 +13,6 @@ tasks:
     command: |
       cd frontend-react-js
       npm i
-      cd ..
 
   - name: flask
     command: |
