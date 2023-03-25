@@ -19,7 +19,6 @@ tasks:
     command: |
       cd backend-flask
       pip install -r requirements.txt
-      cd ..
 
   - name: postgres
     init: |
@@ -29,7 +28,7 @@ tasks:
       sudo apt install -y postgresql-client-13 libpq-dev
     command: |
       export GITPOD_IP=$(curl ifconfig.me)
-      source "$THEIA_WORKSPACE_ROOT/backend-flask/bin/rds-update-sg-rule"
+      source "$THEIA_WORKSPACE_ROOT/backend-flask/bin/rds/rds-update-sg-rule"
 
 vscode:
   extensions:
