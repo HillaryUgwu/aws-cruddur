@@ -4,7 +4,7 @@ import boto3
 import os
 import sys
 
-print("== db-update-cognito-user-ids")
+print("db-update-cognito-user-ids ====== db-update-cognito-user-ids")
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 parent_path = os.path.abspath(os.path.join(current_path, '..', '..'))
@@ -47,7 +47,7 @@ def get_cognito_user_ids():
 users = get_cognito_user_ids()
 
 for handle, sub in users.items():
-  print('----',handle,sub)
+  print(f"db-update-cognito-user-ids =========== {handle,sub}")
   update_users_with_cognito_user_id(
     handle=handle,
     sub=sub

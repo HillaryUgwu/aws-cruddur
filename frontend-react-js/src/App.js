@@ -35,10 +35,10 @@ Amplify.configure({
   }
 });
 
-const rollbarConfig = {
-  accessToken: 'ROLLBAR_ACCESS_TOKEN_FRONTEND',
-  environment: 'testenv',
-};
+// const rollbarConfig = {
+//   accessToken: 'ROLLBAR_ACCESS_TOKEN_FRONTEND',
+//   environment: 'testenv',
+// };
 
 const router = createBrowserRouter([
   {
@@ -90,7 +90,7 @@ function TestError() {
 
 function App() {
   return (
-    <Provider config={rollbarConfig}>
+    <Provider /* config={rollbarConfig} */>
       <ErrorBoundary>
         <RouterProvider router={router} />
         {/* <TestError /> */}
@@ -98,5 +98,6 @@ function App() {
     </Provider>
   );
 }
+
 
 export default App;

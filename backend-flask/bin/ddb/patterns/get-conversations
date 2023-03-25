@@ -40,10 +40,10 @@ query_params = {
 response = ddb.query(**query_params)
 
 # print the items returned by the query
-print(json.dumps(response, sort_keys=True, indent=2))
+print(f"Get-conversations ===== query items == {json.dumps(response, sort_keys=True, indent=2)}")
 
 # print the consumed capacity
-print(json.dumps(response['ConsumedCapacity'], sort_keys=True, indent=2))
+print(f"Get-conversations =====  consumed capacity == {json.dumps(response['ConsumedCapacity'], sort_keys=True, indent=2)}")
 
 items = response['Items']
 items.reverse()
@@ -54,4 +54,4 @@ for item in items:
   timestamp     = item['sk']['S']
   dt_object = datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%f%z')
   formatted_datetime = dt_object.strftime('%Y-%m-%d %I:%M %p')
-  print(f'{sender_handle: <14}{formatted_datetime: <22}{message[:40]}...')
+  print(f'Get-conversations =====  sender handle == {sender_handle: <14}{formatted_datetime: <22}{message[:40]}...')

@@ -46,16 +46,13 @@ class CreateMessage:
         'cognito_user_id': cognito_user_id,
         'user_receiver_handle': rev_handle
       })
-      print("USERS =-=-=-=-==")
-      print(users)
+      print(f"Create_message.py ===== USERS == {users}")
 
       my_user    = next((item for item in users if item["kind"] == 'sender'), None)
       other_user = next((item for item in users if item["kind"] == 'recv')  , None)
 
-      print("USERS=[my-user]==")
-      print(my_user)
-      print("USERS=[other-user]==")
-      print(other_user)
+      print(f"Create_message.py ===== USERS=[my-user] == {my_user}")
+      print(f"Create_message.py ===== USERS=[other-user] == {other_user}")
 
       ddb = Ddb.client()
 
