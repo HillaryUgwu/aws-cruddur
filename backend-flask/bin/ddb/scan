@@ -13,4 +13,4 @@ response = table.scan()
 
 items = response['Items']
 for item in items:
-  print(item)
+  print(f"Scan ======== items == {item}")

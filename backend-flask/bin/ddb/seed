@@ -34,21 +34,18 @@ def get_user_uuids():
         )
   """
   users = db.query_array_json(sql,{
-    'my_handle':  'andrewbrown',
-    'other_handle': 'ohahuru'
+    'my_handle':  'ohahuru',
+    'other_handle': 'andrewbrown'
   })
-  # print('user==================')
-  # print(users)
 
-  my_user    = next((item for item in users if item["handle"] == 'andrewbrown'), None)
-  other_user = next((item for item in users if item["handle"] == 'ohahuru'), None)
+  my_user    = next((item for item in users if item["handle"] == 'ohahuru'), None)
+  other_user = next((item for item in users if item["handle"] == 'andrewbrown'), None)
   results = {
     'my_user': my_user,
     'other_user': other_user
   }
  
-  print('get_user_uuids')
-  print(results)
+  print(f'Seed =========== get_user_uuids == {results}')
   return results
 
 def create_message_group(client,message_group_uuid, my_user_uuid, last_message_at=None, message=None, other_user_uuid=None, other_user_display_name=None, other_user_handle=None):
@@ -67,7 +64,7 @@ def create_message_group(client,message_group_uuid, my_user_uuid, last_message_a
     TableName=table_name,
     Item=record
   )
-  print(response)
+  print(f"Seed =========== response ==== {response}")
 
 def create_message(client,message_group_uuid, created_at, message, my_user_uuid, my_user_display_name, my_user_handle):
   table_name = 'cruddur-messages'
@@ -86,12 +83,12 @@ def create_message(client,message_group_uuid, created_at, message, my_user_uuid,
     Item=record
   )
   # print the response
-  print(response)
+  print(f"Seed =========== response === {response}")
 
-message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399" 
+message_group_uuid = "9aed7626-ec7e-4e8c-b86e-46b09c85a43f" 
 now = datetime.now(timezone.utc).astimezone()
 users = get_user_uuids()
-
+print(f"seed========== users {users}")
 create_message_group(
   client=ddb,
   message_group_uuid=message_group_uuid,
@@ -231,7 +228,7 @@ for i in range(len(lines)):
     key = 'other_user'
     message = lines[i].replace('Person 2: ', '')
   else:
-    print(lines[i])
+    print(f"Seed ===========  message lines === {lines[i]}")
     raise 'invalid line'
 
   created_at = (now + timedelta(minutes=i)).isoformat()

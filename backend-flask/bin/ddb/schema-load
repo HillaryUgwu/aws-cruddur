@@ -50,4 +50,4 @@ response = ddb.create_table(
 )
 
 # print the response
-print(response)
+print(f"Schema-load ======== response == {response}")

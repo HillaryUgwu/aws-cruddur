@@ -36,7 +36,7 @@ def get_my_user_uuid():
   return uuid
 
 my_user_uuid = get_my_user_uuid()
-print(f"my-uuid: {my_user_uuid}")
+print(f"List-conversations ===== my-uuid: == {my_user_uuid}")
 
 current_year = datetime.datetime.now().year
 # define the query parameters
@@ -55,4 +55,4 @@ query_params = {
 response = ddb.query(**query_params)
 
 # print the items returned by the query
-print(json.dumps(response, sort_keys=True, indent=2))
+print(f"List-conversations ========= query response == {json.dumps(response, sort_keys=True, indent=2)}")
