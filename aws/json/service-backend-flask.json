@@ -1,7 +1,7 @@
 {
     "cluster": "cruddur",
     "launchType": "FARGATE",
-    "desiredCount": 1,
+    "desiredCount": 0,
     "enableECSManagedTags": true,
     "enableExecuteCommand": true,
     "loadBalancers": [
