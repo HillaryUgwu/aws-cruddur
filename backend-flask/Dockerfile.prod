@@ -11,11 +11,15 @@ COPY requirements.txt requirements.txt
 # Install the python libraries used for the app
 RUN pip3 install -r requirements.txt
 
-# 
+# Outside Container -> Inside Container
+# . means everything in the current directory
+# first period . - /backend-flask (outside container)
+# second period . /backend-flask (inside container)
 COPY . .
+
 
 EXPOSE ${PORT}
 
 # CMD (command)
 # Python3 -m (module) flask run --host=0.0.0.0 --port=4567
-CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=4567", "--debug" ]
+CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=4567", "--no-debug","--no-debugger","--no-reload" ]
