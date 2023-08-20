@@ -15,9 +15,3 @@ aws ecs update-service \
 --service $SERVICE_NAME \
 --task-definition $LATEST_TASK_DEFINITION_ARN \
 --force-new-deployment
-
-#aws ecs describe-services \
-#--cluster $CLUSTER_NAME \
-#--service $SERVICE_NAME \
-#--query 'services[0].deployments' \
-#--output table
