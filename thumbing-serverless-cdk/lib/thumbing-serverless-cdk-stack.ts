@@ -23,7 +23,7 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     const webhookUrl: string = process.env.THUMBING_WEBHOOK_URL as string;
     const topicName: string = process.env.THUMBING_TOPIC_NAME as string;
     const functionPath: string = process.env.THUMBING_FUNCTION_PATH as string;
-    console.log('uploadsBucketName',)
+    console.log('uploadsBucketName',uploadsBucketName)
     console.log('assetsBucketName',assetsBucketName)
     console.log('folderInput',folderInput)
     console.log('folderOutput',folderOutput)
