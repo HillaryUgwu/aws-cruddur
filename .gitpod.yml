@@ -29,6 +29,7 @@ tasks:
   - name: flask
     command: |
       ruby "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env"
+      source "$THEIA_WORKSPACE_ROOT/bin/ecr/login"
       cd backend-flask
       pip install -r requirements.txt
 
