@@ -168,10 +168,10 @@ components:
           example: 0056a369-4618-43a4-ad88-e7c371bf5582
         display_name:
           type: string
-          example: "Andrew Brown"
+          example: "Hillary Ugwu"
         handle:
           type: string
-          example: "andrewbrown"
+          example: "ohahuru"
         message:
           type: string
           example: "Who likes pineapple on their pizza?"
@@ -201,7 +201,7 @@ components:
           example: 0056a369-4618-43a4-ad88-e7c371bf5582
         handle:
           type: string
-          example: "andrewbrown"
+          example: "ohahuru"
         message:
           type: string
           example: "Who likes pineapple on their pizza?"
@@ -226,10 +226,10 @@ components:
           example: 0056a369-4618-43a4-ad88-e7c371bf5582
         display_name:
           type: string
-          example: "Andrew Brown"
+          example: "Hillary Ugwu"
         handle:
           type: string
-          example: "andrewbrown"
+          example: "ohahuru"
         message:
           type: string
           example: "Who likes pineapple on their pizza?"
