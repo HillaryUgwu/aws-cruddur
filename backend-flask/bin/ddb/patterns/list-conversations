@@ -10,6 +10,7 @@ current_path = os.path.dirname(os.path.abspath(__file__))
 parent_path = os.path.abspath(os.path.join(current_path, '..', '..', '..'))
 sys.path.append(parent_path)
 from lib.db import db
+from lib.ddb import Ddb
 
 attrs = {
   'endpoint_url': 'http://localhost:8000'
@@ -19,6 +20,7 @@ if len(sys.argv) == 2:
   if "prod" in sys.argv[1]:
     attrs = {}
 
+print(f"Endpoint_URL================={attrs}")
 ddb = boto3.client('dynamodb',**attrs)
 table_name = 'cruddur-messages'
 
@@ -56,3 +58,28 @@ response = ddb.query(**query_params)
 
 # print the items returned by the query
 print(f"List-conversations ========= query response == {json.dumps(response, sort_keys=True, indent=2)}")
+
+year = str(current_year)
+query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues': {
+        ':year': {'S': year },
+        ':pk': {'S': f"GRP#{my_user_uuid}"}
+      }
+    }
+
+# query the table
+print(f"Query===================== {year}")
+response = ddb.query(**query_params)
+
+# print the items returned by the query
+print("Query22222222222222=====================")
+print(json.dumps(response, sort_keys=True, indent=2))
+
+
+ddb = Ddb.client()
+data = Ddb.list_message_groups(ddb,my_user_uuid)
+print(f"Main data===================== {data}")
