@@ -12,12 +12,19 @@
 	"remoteEnv": {
 		"AWS_CLI_AUTO_PROMPT": "on-partial"
 	},
-	"postCreateCommand": "cd /frontend-react-js && npm install",
+	"postCreateCommand": [
+							"cd /frontend-react-js && npm install",
+							"cd ../backend-flask && pip install -r requirements.txt",
+							"cd .. && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg && echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list && sudo apt update && sudo apt install -y postgresql-client-13 libpq-dev",
+							"export GITPOD_IP=$(curl ifconfig.me) && ./backend-flask/bin/rds/rds-update-sg-rule"
+						],
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-python.python",
-				"ms-azuretools.vscode-docker"
+				"ms-azuretools.vscode-docker",
+				"42Crunch.vscode-openapi",
+    			"weijan.vscode-postgresql-client2"
 			],
 			"settings": {
 				"workbench.colorTheme": "Default Dark+ Experimental"
