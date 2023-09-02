@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # name: Getting started
-source "$CODESPACE_VSCODE_FOLDER/bin/bootstrap"
+bash $CODESPACE_VSCODE_FOLDER/bin/bootstrap
 
 #  name: postgres
 curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
