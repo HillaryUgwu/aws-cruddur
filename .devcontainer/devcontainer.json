@@ -12,7 +12,7 @@
 	"remoteEnv": {
 		"AWS_CLI_AUTO_PROMPT": "on-partial"
 	},
-	"postCreateCommand": "cd /frontend-react-js && npm install",
+	"postCreateCommand": ["./.devcontainer/postCreateCommand.sh"],
 	"customizations": {
 		"vscode": {
 			"extensions": [
