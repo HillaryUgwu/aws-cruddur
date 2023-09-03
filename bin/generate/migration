@@ -6,7 +6,7 @@ import sys
 if len(sys.argv) == 2:
   name = sys.argv[1]
 else:
-  print("pass a filename: eg. ./bin/generate/migration add_bio_column")
+  print("ERROR: pass a filename: eg. ./bin/generate/migration add_bio_column")
   exit(0)
 
 timestamp = str(time.time()).replace(".","")

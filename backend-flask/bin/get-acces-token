@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+
+import boto3
+import sys
+import json
+import os
+import datetime
+
+current_path = os.path.dirname(os.path.abspath(__file__))
+parent_path = os.path.abspath(os.path.join(current_path, '..'))
+sys.path.insert(0,parent_path)
+print(f'++{sys.path}')
+from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
+
+
+cognito_jwt_token = CognitoJwtToken(
+  user_pool_id=os.getenv("AWS_COGNITO_USER_POOL_ID"), 
+  user_pool_client_id=os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID"), 
+  region=os.getenv("AWS_DEFAULT_REGION")
+  )
+
+print(f'===user_pool_client_id============= {os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID")}')
+print(f'===region============= {os.getenv("AWS_DEFAULT_REGION")}')
+print(f'===user_pool_id============= {os.getenv("AWS_COGNITO_USER_POOL_ID")}')
+print('++++++++++++++++++++++++++++++++++++')
+
+def data_home():
+  access_token = "eyJraWQiOiJuTFpETEo2b3NpXC9zSURVdHRNVjJEaDV2VlEyWGNhTnpiR1Nya2xVUUM1MD0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI5YWVkNzYyNi1lYzdlLTRlOGMtYjg2ZS00NmIwOWM4NWE0M2YiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9OWXFneTM2S1ciLCJjbGllbnRfaWQiOiI3MTFmazZnNjlubm12ZWh2ZDFndHQ0cjdyMSIsIm9yaWdpbl9qdGkiOiI3OGExM2QzZi03YWE5LTRkMzQtYjA1YS1lYmM1YTVhZDQ5NWEiLCJldmVudF9pZCI6IjY2ZDY3MWNlLTI1NDEtNDg1ZC1hMTU1LWQ3MGIzZTg5YzE4MyIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2OTM3MzA5ODAsImV4cCI6MTY5MzczNDU4MCwiaWF0IjoxNjkzNzMwOTgwLCJqdGkiOiI5M2MwZDk2Ny0wZmRjLTQzMzYtODA3Ny1mZTAzNzBhYjhjMDEiLCJ1c2VybmFtZSI6IjlhZWQ3NjI2LWVjN2UtNGU4Yy1iODZlLTQ2YjA5Yzg1YTQzZiJ9.ksZvhvUdtQPZZqZPdtDzu5tSeKyh1SHlkKL5qdMNNgoy2xOgSItmxcTBrjnP7xkcDXgiUsZcq88EaVRBwbTsVOXwH9Th-pgOk3_Fsjmy1IeLz9XY7kjF-yjkhb18O8CXBDaEkEtZPdUrP500IAP56JLPfgcrJEQycx1cC-qv4KfvuiW9-9pIR5Xwj17V19b4_9RneFDB8HvTzmNm512B5s617nZxfkP-QWVRtU9Be06Vn-ISLJ0rB-sIOD-KenCiakqmJiwrIUrNbO_7khlrjJ2f2L-8SRf-Ei4oBQ2fSnZJEfUpUVw9eXJZLlaxeRbjf4AM4ZSZDarUOpZ1KrcVFg"
+  try:
+      claims = cognito_jwt_token.verify(access_token)
+      # authenicatied request
+      print("authenicated")
+      print(claims)
+      print(claims['username'])
+      # data = HomeActivities.run(cognito_user_id=claims['username'])
+  except TokenVerifyError as e:
+    # unauthenicatied request
+    print(e)
+    print("unauthenicated")
+    # data = HomeActivities.run()
+  # return data, 200
+
+data_home()

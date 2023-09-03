@@ -10,13 +10,7 @@ ABS_PATH=$(readlink -f "$0")
 BIN_PATH=$(dirname $ABS_PATH)
 DB_PATH="$BIN_PATH/db"
 DDB_PATH="$BIN_PATH/ddb"
-echo "====$"
-echo $DB_PATH
-echo "====$"
 
-source "$DB_PATH/create"
-source "$DB_PATH/schema-load"
-source "$DB_PATH/seed"
-python "$DB_PATH/update_cognito_user_ids"
-python "$DDB_PATH/schema-load"
-python "$DDB_PATH/seed"
+bash $DB_PATH/setup
+python $DDB_PATH/schema-load
+python $DDB_PATH/seed
