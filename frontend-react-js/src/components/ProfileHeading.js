@@ -18,7 +18,7 @@ export default function ProfileHeading(props) {
       <div className="avatar">
         <img src="https://assets.cruddur.com/avatars/data.jpg"></img>
       </div>
-      {/* <ProfileAvatar id={props.profile.cognito_user_uuid} /> */}
+      <ProfileAvatar id={props.profile.cognito_user_uuid} />
     </div>
     <div className="info">
       <div className='id'>
