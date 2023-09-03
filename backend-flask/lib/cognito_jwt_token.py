@@ -116,6 +116,7 @@ class CognitoJwtToken:
         claims = self._extract_claims(token)
         self._check_expiration(claims, current_time)
         self._check_audience(claims)
+        
 
         self.claims = claims
         return claims
