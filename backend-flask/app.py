@@ -216,6 +216,7 @@ def data_create_message():
 @app.route("/api/activities/home", methods=['GET'])
 def data_home():
   access_token = extract_access_token(request.headers)
+  print(request.headers)
   try:
       claims = cognito_jwt_token.verify(access_token)
       # authenicatied request
