@@ -13,7 +13,6 @@ export default function ProfileForm(props) {
   }, [props.profile])
 
   const s3uploadkey = async (extension)=> {
-    console.log('ext',extension)
     try {
       const gateway_url = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
       await getAccessToken()
@@ -52,8 +51,7 @@ export default function ProfileForm(props) {
     const fileparts = filename.split('.')
     const extension = fileparts[fileparts.length-1]
     const presignedurl = await s3uploadkey(extension)
-    console.log('presignedurl')
-    console.log(preview_image_url)
+    console.log('presignedurl',presignedurl)
     try {
       console.log('s3upload')
       const res = await fetch(presignedurl, {
