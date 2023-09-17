@@ -45,10 +45,10 @@ tasks:
     
   - name: docker
     before: aws-cli
+    command: |
       ruby "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env"
       ruby "$THEIA_WORKSPACE_ROOT/bin/frontend/generate-env"
       bash "$THEIA_WORKSPACE_ROOT/bin/ecr/login"
-    command: |
       export GITPOD_IP=$(curl ifconfig.me)
       source "$THEIA_WORKSPACE_ROOT/bin/rds/update-sg-rule"
 
