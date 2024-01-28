@@ -93,7 +93,7 @@ Resources:
   ALB:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-loadbalancer.html
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-    Properties:
+    Properties: 
       Name: !Sub "${AWS::StackName}ALB"
       Type: application
       IpAddressType: ipv4
@@ -104,7 +104,8 @@ Resources:
       Subnets:
         Fn::Split:
           - ","
-          - Fn::ImportValue: !Sub "${NetworkingStack}PublicSubnetIds"
+          - Fn::ImportValue:
+              !Sub "${NetworkingStack}PublicSubnetIds"
       LoadBalancerAttributes:
         - Key: routing.http2.enabled
           Value: true
@@ -128,39 +129,39 @@ Resources:
       Protocol: HTTPS
       Port: 443
       LoadBalancerArn: !Ref ALB
-      Certificates:
+      Certificates: 
         - CertificateArn: !Ref CertificateArn
       DefaultActions:
         - Type: forward
-          TargetGroupArn: !Ref FrontendTG
+          TargetGroupArn:  !Ref FrontendTG
   HTTPListener:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      Protocol: HTTP
-      Port: 80
-      LoadBalancerArn: !Ref ALB
-      DefaultActions:
-        - Type: redirect
-          RedirectConfig:
-            Protocol: "HTTPS"
-            Port: 443
-            Host: "#{host}"
-            Path: "/#{path}"
-            Query: "#{query}"
-            StatusCode: "HTTP_301"
+        Protocol: HTTP
+        Port: 80
+        LoadBalancerArn: !Ref ALB
+        DefaultActions:
+          - Type: redirect
+            RedirectConfig:
+              Protocol: "HTTPS"
+              Port: 443
+              Host: "#{host}"
+              Path: "/#{path}"
+              Query: "#{query}"
+              StatusCode: "HTTP_301"
   ApiALBListernerRule:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listenerrule.html
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
-      Conditions:
+      Conditions: 
         - Field: host-header
-          HostHeaderConfig:
-            Values:
-              - api.ohary37.com
-      Actions:
+          HostHeaderConfig: 
+            Values: 
+              - api.cruddur.com
+      Actions: 
         - Type: forward
-          TargetGroupArn: !Ref BackendTG
+          TargetGroupArn:  !Ref BackendTG
       ListenerArn: !Ref HTTPSListener
       Priority: 1
   ALBSG:
@@ -170,23 +171,40 @@ Resources:
       GroupName: !Sub "${AWS::StackName}AlbSG"
       GroupDescription: Public Facing SG for our Cruddur ALB
       VpcId:
-        Fn::ImportValue: !Sub ${NetworkingStack}VpcId
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: "0.0.0.0/0"
+          CidrIp: '0.0.0.0/0'
           Description: INTERNET HTTPS
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: "0.0.0.0/0"
+          CidrIp: '0.0.0.0/0'
           Description: INTERNET HTTP
+  # We have to create this SG before the service so we can pass it to database SG
+  ServiceSG:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub "${AWS::StackName}ServSG"
+      GroupDescription: Security for Fargate Services for Cruddur
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          SourceSecurityGroupId: !GetAtt ALBSG.GroupId
+          FromPort: !Ref BackendPort
+          ToPort: !Ref BackendPort
+          Description: ALB HTTP
   BackendTG:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      # Name: !Sub "${AWS::StackName}BackendTG"
+      #Name: !Sub "${AWS::StackName}BackendTG"
       Port: !Ref BackendPort
       HealthCheckEnabled: true
       HealthCheckProtocol: !Ref BackendHealthCheckProtocol
@@ -197,16 +215,17 @@ Resources:
       HealthyThresholdCount: !Ref BackendHealthyThresholdCount
       UnhealthyThresholdCount: !Ref BackendUnhealthyThresholdCount
       IpAddressType: ipv4
-      Matcher:
+      Matcher: 
         HttpCode: 200
       Protocol: HTTP
       ProtocolVersion: HTTP2
       TargetType: ip
-      TargetGroupAttributes:
+      TargetGroupAttributes: 
         - Key: deregistration_delay.timeout_seconds
           Value: 0
       VpcId:
-        Fn::ImportValue: !Sub ${NetworkingStack}VpcId
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
       Tags:
         - Key: target-group-name
           Value: backend
@@ -214,7 +233,7 @@ Resources:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      # Name: !Sub "${AWS::StackName}FrontendTG"
+      #Name: !Sub "${AWS::StackName}FrontendTG"
       Port: !Ref FrontendPort
       HealthCheckEnabled: true
       HealthCheckProtocol: !Ref FrontendHealthCheckProtocol
@@ -225,12 +244,12 @@ Resources:
       HealthyThresholdCount: !Ref FrontendHealthyThresholdCount
       UnhealthyThresholdCount: !Ref FrontendUnhealthyThresholdCount
       IpAddressType: ipv4
-      Matcher:
+      Matcher: 
         HttpCode: 200
       Protocol: HTTP
       ProtocolVersion: HTTP2
       TargetType: ip
-      TargetGroupAttributes:
+      TargetGroupAttributes: 
         - Key: deregistration_delay.timeout_seconds
           Value: 0
       VpcId:
@@ -244,6 +263,10 @@ Outputs:
     Value: !Ref FargateCluster
     Export:
       Name: !Sub "${AWS::StackName}ClusterName"
+  ServiceSecurityGroupId:
+    Value: !GetAtt ServiceSG.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
   ALBSecurityGroupId:
     Value: !GetAtt ALBSG.GroupId
     Export:
