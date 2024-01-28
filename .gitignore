@@ -4,3 +4,6 @@ frontend-react-js/build/*
 docker/
 session-manager-plugin.deb
 node_modules
+.aws-sam
+build.toml
+tmp/*
