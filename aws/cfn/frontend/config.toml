@@ -1,0 +1,9 @@
+[deploy]
+bucket = 'cfn-artifacts-ohary37.com'
+region = 'us-east-1'
+stack_name = 'CrudFrontend'
+
+[parameters]
+CertificateArn = 'arn:aws:acm:us-east-1:897590156694:certificate/a9923d36-5afd-410a-8e90-9f86bd84373b'
+WwwBucketName = 'www.ohary37.com'
+RootBucketName = 'ohary37.com'
