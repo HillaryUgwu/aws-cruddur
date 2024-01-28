@@ -1,5 +1,5 @@
 {
-    "cluster": "cruddur",
+    "cluster": "CruddurFargateCluster",
     "launchType": "FARGATE",
     "desiredCount": 0,
     "enableECSManagedTags": true,
