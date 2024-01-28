@@ -16,6 +16,7 @@ aws cloudformation deploy \
     # --s3-bucket $CFN_BUCKET \
     --stack-name $STACK_NAME \
     --s3-bucket $BUCKET \
+    --s3-prefix networking \
     --region $REGION \
     --template-file $CFN_PATH \
     --no-execute-changeset \
