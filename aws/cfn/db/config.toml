@@ -1,0 +1,9 @@
+[deploy]
+bucket = 'cfn-artifacts-ohary37.com'
+region = 'us-east-1'
+stack_name = 'CrudDb'
+
+[parameters]
+NetworkingStack = 'CrudNet'
+ClusterStack = 'CrudCluster'
+MasterUsername = 'cruddurroot'
