@@ -20,7 +20,7 @@ Parameters:
   NetworkingStack:
     Type: String
     Description: This is our base layer of networking components eg. VPC, Subnets
-    Default: CrdNet
+    Default: CrudNet
   CertificateArn:
     Type: String
   #Frontend ------
