@@ -5,7 +5,7 @@ import os
 import rollbar
 import rollbar.contrib.flask
 
-def init_rollbar():
+def init_rollbar(app):
   rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
   rollbar.init(
       # access token
