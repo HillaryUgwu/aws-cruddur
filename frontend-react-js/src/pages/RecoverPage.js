@@ -21,11 +21,10 @@ export default function RecoverPage() {
     .catch((err) => setErrors(err.message) );
     return false
   }
-  
   const onsubmit_confirm_code = async (event) => {
     event.preventDefault();
     setErrors('')
-    if (password == passwordAgain){
+    if (password === passwordAgain){
       Auth.forgotPasswordSubmit(username, code, password)
       .then((data) => setFormState('success'))
       .catch((err) => setErrors(err.message) );
@@ -35,7 +34,6 @@ export default function RecoverPage() {
     return false
   }
   
-
   const username_onchange = (event) => {
     setUsername(event.target.value);
   }
@@ -128,13 +126,13 @@ export default function RecoverPage() {
     }
 
   let form;
-  if (formState == 'send_code') {
+  if (formState === 'send_code') {
     form = send_code()
   }
-  else if (formState == 'confirm_code') {
+  else if (formState === 'confirm_code') {
     form = confirm_code()
   }
-  else if (formState == 'success') {
+  else if (formState === 'success') {
     form = success()
   }
 
