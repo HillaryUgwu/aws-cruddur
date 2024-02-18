@@ -9,17 +9,16 @@ import SigninPage from './pages/SigninPage';
 import RecoverPage from './pages/RecoverPage';
 import MessageGroupsPage from './pages/MessageGroupsPage';
 import MessageGroupPage from './pages/MessageGroupPage';
-import ConfirmationPage from './pages/ConfirmationPage';
 import MessageGroupNewPage from './pages/MessageGroupNewPage';
+import ConfirmationPage from './pages/ConfirmationPage';
+import ActivityShowPage from './pages/ActivityShowPage';
 import React from 'react';
 import {
   createBrowserRouter,
   RouterProvider
 } from "react-router-dom";
 
-// configure Amplify
 import { Amplify } from 'aws-amplify';
-import { Provider, ErrorBoundary } from '@rollbar/react'; // Provider imports 'rollbar'
 
 Amplify.configure({
   "AWS_PROJECT_REGION": process.env.REACT_APP_AWS_PROJECT_REGION,
@@ -36,23 +35,22 @@ Amplify.configure({
   }
 });
 
-const rollbarConfig = {
-  accessToken: 'ROLLBAR_ACCESS_TOKEN_FRONTEND',
-  environment: 'testenv',
-};
-
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeFeedPage />
   },
   {
-    path: "/Notifications",
+    path: "/notifications",
     element: <NotificationsFeedPage />
   },
   {
     path: "/@:handle",
     element: <UserFeedPage />
+  },
+  {
+    path: "/@:handle/status/:activity_uuid",
+    element: <ActivityShowPage />
   },
   {
     path: "/messages",
@@ -84,21 +82,12 @@ const router = createBrowserRouter([
   }
 ]);
 
-function TestError() {
-  const a = null;
-  return a.hello();
-}
-
 function App() {
   return (
-    <Provider config={rollbarConfig}>
-      <ErrorBoundary>
-        <RouterProvider router={router} />
-        {/* <TestError /> */}
-      </ErrorBoundary>
-    </Provider>
+    <>
+      <RouterProvider router={router} />
+    </>
   );
 }
-
 
 export default App;
