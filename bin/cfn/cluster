@@ -14,7 +14,6 @@ PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 
 aws cloudformation deploy \
   --stack-name $STACK_NAME \
-  # --stack-name "CrudCluster" \
   --s3-bucket $BUCKET \
   --s3-prefix cluster \
   --region $REGION \
