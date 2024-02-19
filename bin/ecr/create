@@ -1,0 +1,31 @@
+#! /usr/bin/bash
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="ECR creation"
+printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+
+ABS_PATH=$(readlink -f "$0")
+ECR_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $ECR_PATH)
+
+source "$ECR_PATH/login"
+
+aws ecr create-repository \
+  --repository-name cruddur-python \
+  --image-tag-mutability MUTABLE
+
+ECR_PYTHON_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/cruddur-python"
+echo $ECR_PYTHON_URL
+
+docker pull python:3.10-slim-buster
+docker tag python:3.10-slim-buster $ECR_PYTHON_URL:3.10-slim-buster
+docker push $ECR_PYTHON_URL:3.10-slim-buster
+
+aws ecr create-repository \
+  --repository-name backend-flask \
+  --image-tag-mutability MUTABLE
+
+source "$BIN_PATH/backend/build"
+source "$BIN_PATH/backend/push"
+
