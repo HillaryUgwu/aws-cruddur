@@ -43,7 +43,7 @@ Parameters:
     Default: https://api.honeycomb.io
   EnvAWSCognitoUserPoolId:
     Type: String
-    Default: us-east-1_NYqgy36KW
+    Default: us-east-1_WUU4d4exl
   EnvCognitoUserPoolClientId:
     Type: String
     Default: 303i8fkfl7vv2uaf0gs7n5cfuu
