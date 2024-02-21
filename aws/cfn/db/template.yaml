@@ -88,15 +88,24 @@ Resources:
       Engine: postgres
       EngineVersion: !Ref EngineVersion
 
-# Must be 1 to 63 letters or numbers.
-# First character must be a letter.
-# Can't be a reserved word for the chosen database engine.
+      # Must be 1 to 63 letters or numbers.
+      # First character must be a letter.
+      # Can't be a reserved word for the chosen database engine.
       MasterUsername:  !Ref MasterUsername
       # Constraints: Must contain from 8 to 128 characters.
       MasterUserPassword: !Ref MasterUserPassword
       PubliclyAccessible: true
       VPCSecurityGroups:
         - !GetAtt RDSPostgresSG.GroupId
+
+  SSMConnectionURL:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /cruddur/backend-flask/CONNECTION_URL
+      Type: String
+      Value: !Sub 'postgresql://${MasterUsername}:${MasterUserPassword}@${Database.Endpoint.Address}:5432/cruddur'
+      Description: 'The connection URL for the PostgreSQL RDS instance'
+      
 #Outputs:
 #  ServiceSecurityGroupId:
 #    Value: !GetAtt ServiceSG.GroupId

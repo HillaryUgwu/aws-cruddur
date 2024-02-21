@@ -1,11 +1,12 @@
 #! /usr/bin/env bash
-set -e # Stop execution of the script if it fails
 
-CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/template.yaml"
+ABS_PATH=$(readlink -f "$0")
+CFN_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $ECR_PATH)
 
-aws cloudformation deploy \
-    --stack-name "my-cluster" \
-    --s3-bucket "cfn-artifacts-ohary37.com" \
-    --template-file $CFN_PATH \
-    --no-execute-changeset \
-    --capabilities CAPABILITY_NAMED_IAM
+# source "$CFN_PATH/networking"
+
+source "$CFN_PATH/cluster"
+source "$CFN_PATH/db"
+
+source "$CFN_PATH/service"
