@@ -16,6 +16,7 @@ Parameters:
     Type: String
   ArtifactBucketName:
     Type: String
+    Default: codepipeline-cfn-artifacts-ohary37.com
   BuildSpec:
     Type: String
 Resources:

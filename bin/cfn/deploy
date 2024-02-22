@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/usr/bin/bash
 
 ABS_PATH=$(readlink -f "$0")
 CFN_PATH=$(dirname $ABS_PATH)
@@ -6,7 +6,10 @@ BIN_PATH=$(dirname $ECR_PATH)
 
 # source "$CFN_PATH/networking"
 
-source "$CFN_PATH/cluster"
-source "$CFN_PATH/db"
+# source "$CFN_PATH/cluster"
+# source "$CFN_PATH/db"
+# source "$CFN_PATH/cicd"
+source "$CFN_PATH/cognito"
+source "$CFN_PATH/ddb"
 
 source "$CFN_PATH/service"

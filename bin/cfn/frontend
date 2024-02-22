@@ -8,7 +8,6 @@ echo $CFN_PATH
 cfn-lint $CFN_PATH
 
 BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
-REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 
@@ -16,7 +15,7 @@ aws cloudformation deploy \
   --stack-name $STACK_NAME \
   --s3-bucket $BUCKET \
   --s3-prefix frontend \
-  --region $REGION \
+  --region $AWS_DEFAULT_REGION \
   --template-file "$CFN_PATH" \
   --no-execute-changeset \
   --tags group=cruddur-frontend \

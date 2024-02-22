@@ -22,7 +22,9 @@ Parameters:
     Description: This is our base layer of networking components eg. VPC, Subnets
     Default: CrudNet
   CertificateArn:
-    Type: String
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: "ACM Certificate arn from parameter store"
+    Default: /AcmCertificateArn
   #Frontend ------
   FrontendPort:
     Type: Number

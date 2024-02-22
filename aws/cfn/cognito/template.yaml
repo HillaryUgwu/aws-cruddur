@@ -1,0 +1,215 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: |
+  - CloudFormation template to create 
+  - Cognito User Pool, 
+  - App Client, and 
+  - Lambda function with specific configurations
+
+Parameters:
+  UserPoolName:
+    Type: String
+    Default: Cruddur-user-pool
+  ClientName:
+    Type: String
+    Default: Cruddur
+  LambdaPath:
+    Type: String
+    Default: /workspace/aws-bootcamp-cruddur-2023/aws/lambdas/cruddur-post-confirmation.py
+  ConnectionURL:
+    Type: String
+    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/CONNECTION_URL'
+  FunctionName:
+    Type: String
+    Default: cruddur-post-confirmation
+
+Resources:
+  CruddurUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref UserPoolName
+      SignInAliases:
+        Email: true
+      MfaConfiguration: OFF
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority:   1
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Schema:
+        - Name: preferred_username
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+        - Name: name
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+      # EmailVerificationMessage: "Your verification code is {####}."
+      # EmailVerificationSubject: "Your verification code"
+      LambdaConfig:
+        PostConfirmation: !GetAtt CruddurPostConfirmationLambdaFunction.Arn
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      UserPoolAddOns:
+        AdvancedSecurityMode: 'Enabled'
+      DeletionPolicy: Retain
+
+  CruddurAppClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Ref ClientName
+      GenerateSecret: false
+      UserPoolId: !Ref CruddurUserPool
+      ExplicitAuthFlows:
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+  # LambdaExecutionRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: LambdaExecutionRole
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - lambda.amazonaws.com
+  #           Action:
+  #             - sts:AssumeRole
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  #       - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+
+  cruddurpostconfirmation:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: !Ref LambdaPath
+      FunctionName: !Ref FunctionName
+      MemorySize: 128
+      Timeout: 3
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      Environment:
+        Variables:
+          CONNECTION_URL: !Ref ConnectionURL
+      # EventInvokeConfig:
+      #   MaximumEventAgeInSeconds: 21600
+      #   MaximumRetryAttempts: 2
+      # PackageType: Zip
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+              Resource: arn:aws:logs:us-east-1:767398112680:*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - >-
+                  arn:aws:logs:us-east-1:767398112680:log-group:/aws/lambda/cruddur-post-confirmation:*
+      SnapStart:
+        ApplyOn: None
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+      VpcConfig:
+        SourceSecurityGroupId:
+            Fn::ImportValue:
+              !Sub ${ClusterStack}ServiceSecurityGroupId
+        SubnetIds: { 'Fn::Split' : [ ','  , { "Fn::ImportValue": { "Fn::Sub": "${NetworkingStack}PublicSubnetIds" }}] }
+        VpcId:
+          Fn::ImportValue:
+            !Sub ${NetworkingStack}VpcId
+        
+  # CruddurPostConfirmationLambdaFunction:
+  #   Type: AWS::Lambda::Function
+  #   Properties:
+  #     CodeUri: !Ref lambda_path
+  #     FunctionName: cruddur-post-confirmation
+  #     Role: !GetAtt LambdaExecutionRole.Arn
+  #     Runtime: python3.10
+  #     Handler: index.handler # Specify the handler
+  #     VpcConfig:
+  #       SecurityGroupIds:
+  #         - sg-085912345678492fb
+  #       SubnetIds:
+  #         - subnet-071f712345678e7c8
+  #         - subnet-07fd123456788a036
+
+  UserPoolIdSSMParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /cruddur/cognito-user-pool-id
+      Type: String
+      Value: !Ref CruddurUserPool
+
+  ClientIdSSMParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /cruddur/cognito-client-id
+      Type: String
+      Value: !GetAtt CruddurAppClient.ClientId
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Resources:
+  CognitoUserPool:
+    Type: 'AWS::Cognito::UserPool'
+    Properties:
+      UserPoolName: !Ref UserPoolName
+      AutoVerifiedAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+      Policies:
+        PasswordPolicy:
+          MinimumLength:  8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+
+  CognitoUserPoolClient:
+    Type: 'AWS::Cognito::UserPoolClient'
+    Properties:
+      ClientName: !Ref ClientName
+      GenerateSecret: false
+      UserPoolId: !Ref CognitoUserPool
+
+  UserPoolIdParameter:
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: /Cognito/UserPoolId
+      Type: String
+      Value: !Ref CognitoUserPool
+
+  UserPoolClientIdParameter:
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: /Cognito/UserPoolClientId
+      Type: String
+      Value: !GetAtt CognitoUserPoolClient.ClientId

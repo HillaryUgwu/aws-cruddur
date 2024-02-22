@@ -27,6 +27,7 @@ Parameters:
     Default: 'buildspec.yaml'
   ArtifactBucketName:
     Type: String
+    Default: codepipeline-cfn-artifacts-ohary37.com
 Resources:
   CodeBuild:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html

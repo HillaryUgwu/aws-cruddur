@@ -25,9 +25,9 @@ phases:
 
 env:
   variables:
-    AWS_ACCOUNT_ID: 897590156694
+    AWS_ACCOUNT_ID: 767398112680
     CONTAINER_NAME: backend-flask
-    IMAGE_URL: 897590156694.dkr.ecr.us-east-1.amazonaws.com
+    IMAGE_URL: 767398112680.dkr.ecr.us-east-1.amazonaws.com
     REPO_NAME: backend-flask:latest
 artifacts:
   files:

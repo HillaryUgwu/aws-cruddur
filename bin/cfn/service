@@ -3,25 +3,11 @@ set -e # stop the execution of the script if it fails
 
 CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/service/template.yaml"
 CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/service/config.toml"
-echo $CFN_PATH
 
 cfn-lint $CFN_PATH
 
-BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
-REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
-
-aws cloudformation deploy \
-  --stack-name $STACK_NAME \
-  --s3-bucket $BUCKET \
-  --s3-prefix backend-service \
-  --region $REGION \
-  --template-file "$CFN_PATH" \
-  --no-execute-changeset \
-  --tags group=cruddur-backend-flask \
-  --parameter-overrides $PARAMETERS \
-  --capabilities CAPABILITY_NAMED_IAM
 
 connection_url=$(aws ssm get-parameter --name /cruddur/backend-flask/CONNECTION_URL --query "Parameter.Value" --output text)
 aws ssm put-parameter --name /cruddur/backend-flask/CONNECTION_URL --type SecureString --value "$connection_url" --overwrite
@@ -29,3 +15,14 @@ aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_A
 aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY" --value $AWS_SECRET_ACCESS_KEY --overwrite
 aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" --value $ROLLBAR_ACCESS_TOKEN --overwrite
 aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" --value "x-honeycomb-team=$HONEYCOMB_API_KEY" --overwrite
+
+
+aws cloudformation deploy \
+  --stack-name $STACK_NAME \
+  --s3-prefix backend-service \
+  --region $AWS_DEFAULT_REGION \
+  --template-file "$CFN_PATH" \
+  --no-execute-changeset \
+  --tags group=cruddur-backend-flask \
+  --parameter-overrides $PARAMETERS \
+  --capabilities CAPABILITY_NAMED_IAM

@@ -4,7 +4,7 @@ set -e # stop the execution of the script if it fails
 FUNC_DIR="/workspace/aws-bootcamp-cruddur-2023/aws/lambdas/cruddur-messaging-stream/"
 TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/ddb/template.yaml"
 CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/ddb/config.toml"
-ARTIFACT_BUCKET="cfn-artifacts-ohary37.com"
+ARTIFACT_BUCKET=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
 
 sam validate -t $TEMPLATE_PATH
 
