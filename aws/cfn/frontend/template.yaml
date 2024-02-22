@@ -8,6 +8,7 @@ Description: |
 Parameters:
   CertificateArn:
     Type: String
+    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/AcmCertificateArn'
   WwwBucketName:
     Type: String
   RootBucketName:

@@ -3,22 +3,23 @@ set -e # Stop execution of the script if it fails
 
 CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/networking/template.yaml"
 CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/networking/config.toml"
-echo $CFN_PATH
 
 cfn-lint $CFN_PATH
 
 BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
-REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
+CertificateArn=$(cfn-toml key deploy.CertificateArn -t $CONFIG_PATH)
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 
 aws cloudformation deploy \
-    # --stack-name "CrudNet" \
-    # --s3-bucket $CFN_BUCKET \
     --stack-name $STACK_NAME \
-    --s3-bucket $BUCKET \
     --s3-prefix networking \
-    --region $REGION \
+    --region $AWS_DEFAULT_REGION \
     --template-file $CFN_PATH \
     --no-execute-changeset \
     --tags group=cruddur-networking \
     --capabilities CAPABILITY_NAMED_IAM
+
+aws s3 mb "s3://$BUCKET"
+aws s3 mb "s3://codepipeline-$BUCKET"
+aws ssm put-parameter --name /cruddur/ArtifactBucketName --type String --value "$BUCKET" --overwrite
+aws ssm put-parameter --name /AcmCertificateArn --type String --value "$CertificateArn" --overwrite

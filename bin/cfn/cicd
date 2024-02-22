@@ -5,31 +5,29 @@ CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cicd/template.yaml"
 CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cicd/config.toml"
 PACKAGED_PATH="/workspace/aws-bootcamp-cruddur-2023/tmp/packaged-template.yaml"
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
-echo $CFN_PATH
 
 cfn-lint $CFN_PATH
 
-BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
-REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
-
+ARTIFACT_BUCKET=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
 # package
 # -----------------
 echo "== packaging CFN to S3..."
 aws cloudformation package \
+  --s3-bucket $ARTIFACT_BUCKET \
   --template-file $CFN_PATH \
-  --s3-bucket $BUCKET \
   --s3-prefix cicd-package \
-  --region $REGION \
+  --region $AWS_DEFAULT_REGION \
   --output-template-file "$PACKAGED_PATH"
 
 aws cloudformation deploy \
   --stack-name $STACK_NAME \
-  --s3-bucket $BUCKET \
   --s3-prefix cicd \
-  --region $REGION \
+  --region $AWS_DEFAULT_REGION \
   --template-file "$PACKAGED_PATH" \
   --no-execute-changeset \
   --tags group=cruddur-cicd \
   --parameter-overrides $PARAMETERS \
   --capabilities CAPABILITY_NAMED_IAM
+
+echo "******** Don't forget to manually validate codestar connection: go to codepipeline and check under 'settings' then 'connections'"

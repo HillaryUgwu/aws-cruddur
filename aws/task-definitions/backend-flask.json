@@ -1,7 +1,7 @@
 {
     "family": "backend-flask",
-    "executionRoleArn": "arn:aws:iam::897590156694:role/CruddurServiceExecutionRole",
-    "taskRoleArn": "arn:aws:iam::897590156694:role/CruddurTaskRole",
+    "executionRoleArn": "arn:aws:iam::767398112680:role/CruddurServiceExecutionRole",
+    "taskRoleArn": "arn:aws:iam::767398112680:role/CruddurTaskRole",
     "networkMode": "awsvpc",
     "cpu": "256",
     "memory": "512",
@@ -24,7 +24,7 @@
       },
       {
         "name": "backend-flask",
-        "image": "897590156694.dkr.ecr.us-east-1.amazonaws.com/backend-flask",
+        "image": "767398112680.dkr.ecr.us-east-1.amazonaws.com/backend-flask",
         "essential": true,
         "healthCheck": {
           "command": [
@@ -62,11 +62,11 @@
           {"name": "AWS_DEFAULT_REGION", "value": "us-east-1"}
         ],
         "secrets": [
-          {"name": "AWS_ACCESS_KEY_ID"    , "valueFrom": "arn:aws:ssm:us-east-1:897590156694:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID"},
-          {"name": "AWS_SECRET_ACCESS_KEY", "valueFrom": "arn:aws:ssm:us-east-1:897590156694:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY"},
-          {"name": "CONNECTION_URL"       , "valueFrom": "arn:aws:ssm:us-east-1:897590156694:parameter/cruddur/backend-flask/CONNECTION_URL" },
-          {"name": "ROLLBAR_ACCESS_TOKEN" , "valueFrom": "arn:aws:ssm:us-east-1:897590156694:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" },
-          {"name": "OTEL_EXPORTER_OTLP_HEADERS" , "valueFrom": "arn:aws:ssm:us-east-1:897590156694:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" }
+          {"name": "AWS_ACCESS_KEY_ID"    , "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID"},
+          {"name": "AWS_SECRET_ACCESS_KEY", "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY"},
+          {"name": "CONNECTION_URL"       , "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/CONNECTION_URL" },
+          {"name": "ROLLBAR_ACCESS_TOKEN" , "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" },
+          {"name": "OTEL_EXPORTER_OTLP_HEADERS" , "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" }
         ]
       }
     ]
