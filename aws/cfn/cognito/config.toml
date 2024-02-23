@@ -1,0 +1,17 @@
+version=0.1
+[default.build.parameters]
+region = "us-east-1"
+
+[default.package.parameters]
+region = "us-east-1"
+
+[default.deploy.parameters]
+region = "us-east-1"
+
+[deploy]
+stack_name = 'CrudCognito'
+
+[parameters]
+UserPoolName = 'Cruddur-user-pool2'
+ClientName = 'Cruddur2'
+LambdaFunctionName = 'post-confirmation'

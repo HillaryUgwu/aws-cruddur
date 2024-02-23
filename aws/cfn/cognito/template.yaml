@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 Description: |
   - CloudFormation template to create 
   - Cognito User Pool, 
@@ -12,13 +13,14 @@ Parameters:
   ClientName:
     Type: String
     Default: Cruddur
-  LambdaPath:
-    Type: String
-    Default: /workspace/aws-bootcamp-cruddur-2023/aws/lambdas/cruddur-post-confirmation.py
+  # LambdaPath:
+  #   Type: String
+  #   Default: /workspace/aws-bootcamp-cruddur-2023/aws/lambdas
   ConnectionURL:
     Type: String
+    # Default: "{{resolve:ssm-secure:cruddur/backend-flask/CONNECTION_URL}}"
     Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/CONNECTION_URL'
-  FunctionName:
+  LambdaFunctionName:
     Type: String
     Default: cruddur-post-confirmation
 
@@ -27,9 +29,9 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: !Ref UserPoolName
-      SignInAliases:
-        Email: true
-      MfaConfiguration: OFF
+      # SignInAliases:
+      #   Email: true
+      # MfaConfiguration: False
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
@@ -50,12 +52,12 @@ Resources:
       # EmailVerificationMessage: "Your verification code is {####}."
       # EmailVerificationSubject: "Your verification code"
       LambdaConfig:
-        PostConfirmation: !GetAtt CruddurPostConfirmationLambdaFunction.Arn
+        PostConfirmation: !GetAtt cruddurpostconfirmation.Arn
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
       UserPoolAddOns:
         AdvancedSecurityMode: 'Enabled'
-      DeletionPolicy: Retain
+      # DeletionPolicy: Retain
 
   CruddurAppClient:
     Type: AWS::Cognito::UserPoolClient
@@ -88,11 +90,13 @@ Resources:
   cruddurpostconfirmation:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: !Ref LambdaPath
-      FunctionName: !Ref FunctionName
+      # CodeUri: !Sub '${LambdaPath}/cruddur-${LambdaFunctionName}.py'
+      CodeUri: cruddur-post-confirmation
+      PackageType: Zip
+      FunctionName: !Ref LambdaFunctionName
       MemorySize: 128
       Timeout: 3
-      Handler: lambda_function.lambda_handler
+      Handler: lambda_handler
       Runtime: python3.8
       Architectures:
         - x86_64
@@ -122,20 +126,20 @@ Resources:
         ApplyOn: None
       RuntimeManagementConfig:
         UpdateRuntimeOn: Auto
-      VpcConfig:
-        SourceSecurityGroupId:
-            Fn::ImportValue:
-              !Sub ${ClusterStack}ServiceSecurityGroupId
-        SubnetIds: { 'Fn::Split' : [ ','  , { "Fn::ImportValue": { "Fn::Sub": "${NetworkingStack}PublicSubnetIds" }}] }
-        VpcId:
-          Fn::ImportValue:
-            !Sub ${NetworkingStack}VpcId
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #       Fn::ImportValue:
+      #         !Sub ${ClusterStack}ServiceSecurityGroupId
+      #   SubnetIds: { 'Fn::Split' : [ ','  , { "Fn::ImportValue": { "Fn::Sub": "${NetworkingStack}PublicSubnetIds" }}] }
+      #   VpcId:
+      #     Fn::ImportValue:
+      #       !Sub ${NetworkingStack}VpcId
         
   # CruddurPostConfirmationLambdaFunction:
   #   Type: AWS::Lambda::Function
   #   Properties:
   #     CodeUri: !Ref lambda_path
-  #     FunctionName: cruddur-post-confirmation
+  #     LambdaFunctionName: cruddur-post-confirmation
   #     Role: !GetAtt LambdaExecutionRole.Arn
   #     Runtime: python3.10
   #     Handler: index.handler # Specify the handler
@@ -159,57 +163,3 @@ Resources:
       Name: /cruddur/cognito-client-id
       Type: String
       Value: !GetAtt CruddurAppClient.ClientId
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Resources:
-  CognitoUserPool:
-    Type: 'AWS::Cognito::UserPool'
-    Properties:
-      UserPoolName: !Ref UserPoolName
-      AutoVerifiedAttributes:
-        - email
-      Schema:
-        - AttributeDataType: String
-          Name: email
-          Required: true
-      Policies:
-        PasswordPolicy:
-          MinimumLength:  8
-          RequireUppercase: true
-          RequireLowercase: true
-          RequireNumbers: true
-          RequireSymbols: true
-
-  CognitoUserPoolClient:
-    Type: 'AWS::Cognito::UserPoolClient'
-    Properties:
-      ClientName: !Ref ClientName
-      GenerateSecret: false
-      UserPoolId: !Ref CognitoUserPool
-
-  UserPoolIdParameter:
-    Type: 'AWS::SSM::Parameter'
-    Properties:
-      Name: /Cognito/UserPoolId
-      Type: String
-      Value: !Ref CognitoUserPool
-
-  UserPoolClientIdParameter:
-    Type: 'AWS::SSM::Parameter'
-    Properties:
-      Name: /Cognito/UserPoolClientId
-      Type: String
-      Value: !GetAtt CognitoUserPoolClient.ClientId

@@ -1,4 +1,2 @@
 [deploy]
-bucket = 'cfn-artifacts-ohary37.com'
-region = 'us-east-1'
 stack_name = 'CrudMachinueUser'

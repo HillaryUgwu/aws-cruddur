@@ -3,17 +3,14 @@ set -e # stop the execution of the script if it fails
 
 CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/machine-user/template.yaml"
 CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/machine-user/config.toml"
-echo $CFN_PATH
 
 cfn-lint $CFN_PATH
 
-BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 
 aws cloudformation deploy \
   --stack-name $STACK_NAME \
-  --s3-bucket $BUCKET \
-  --s3-prefix db \
+  --s3-prefix user \
   --region $AWS_DEFAULT_REGION \
   --template-file "$CFN_PATH" \
   --no-execute-changeset \

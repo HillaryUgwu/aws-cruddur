@@ -7,8 +7,10 @@ Description: |
 
 Parameters:
   CertificateArn:
-    Type: String
-    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/AcmCertificateArn'
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: "ACM Certificate arn from parameter store"
+    Default: /AcmCertificateArn
+    # Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/AcmCertificateArn'
   WwwBucketName:
     Type: String
   RootBucketName:
