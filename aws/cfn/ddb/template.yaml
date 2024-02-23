@@ -126,3 +126,9 @@ Resources:
                   - "dynamodb:GetShardIterator"
                   - "dynamodb:ListStreams"
                 Resource: "*"
+# Outputs:
+#   TableName:
+#     Description: "The name of the DynamoDB table"
+#     Value: !Ref DynamoDBTable
+#     Export:
+#       Name: !Sub "${AWS::StackName}TableName"
