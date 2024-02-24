@@ -3,6 +3,7 @@ set -e # stop the execution of the script if it fails
 
 CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cognito/template.yaml"
 CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cognito/config.toml"
+FILE_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cognito/cruddur-post-confirmation"
 
 cfn-lint $CFN_PATH 
 
@@ -16,6 +17,10 @@ export PROD_CONNECTION_URL="$connection_url" && gp env PROD_CONNECTION_URL="$con
 # aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY" --value $AWS_SECRET_ACCESS_KEY --overwrite
 # aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" --value $ROLLBAR_ACCESS_TOKEN --overwrite
 # aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" --value "x-honeycomb-team=$HONEYCOMB_API_KEY" --overwrite
+
+bucket_name=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
+zip "$FILE_PATH/lambda_function.zip" "$FILE_PATH/lambda_function.py"
+aws s3 cp "$FILE_PATH/lambda_function.zip" "s3://$bucket_name/cognito/"
 
 aws cloudformation deploy \
   --stack-name $STACK_NAME \

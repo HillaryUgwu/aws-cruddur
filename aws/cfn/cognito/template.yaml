@@ -1,5 +1,4 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
 Description: |
   - CloudFormation template to create 
   - Cognito User Pool, 
@@ -23,6 +22,9 @@ Parameters:
   LambdaFunctionName:
     Type: String
     Default: cruddur-post-confirmation
+  BucketName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cruddur/ArtifactBucketName
 
 Resources:
   CruddurUserPool:
@@ -70,58 +72,59 @@ Resources:
         - ALLOW_REFRESH_TOKEN_AUTH
         - ALLOW_USER_SRP_AUTH
 
-  # LambdaExecutionRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     RoleName: LambdaExecutionRole
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - lambda.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-  #     ManagedPolicyArns:
-  #       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-  #       - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CrudCognitoLambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
 
   cruddurpostconfirmation:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
     Properties:
-      # CodeUri: !Sub '${LambdaPath}/cruddur-${LambdaFunctionName}.py'
-      CodeUri: cruddur-post-confirmation
-      PackageType: Zip
       FunctionName: !Ref LambdaFunctionName
       MemorySize: 128
       Timeout: 3
-      Handler: lambda_handler
+      Handler: lambda_function.lambda_handler
       Runtime: python3.8
       Architectures:
         - x86_64
       EphemeralStorage:
         Size: 512
+      Code:
+        S3Bucket: !Ref BucketName
+        S3Key:  "/cognito/lambda_function.zip"
       Environment:
         Variables:
           CONNECTION_URL: !Ref ConnectionURL
+      Role: !GetAtt LambdaExecutionRole.Arn
       # EventInvokeConfig:
       #   MaximumEventAgeInSeconds: 21600
       #   MaximumRetryAttempts: 2
       # PackageType: Zip
-      Policies:
-        - Statement:
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-              Resource: arn:aws:logs:us-east-1:767398112680:*
-            - Effect: Allow
-              Action:
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource:
-                - >-
-                  arn:aws:logs:us-east-1:767398112680:log-group:/aws/lambda/cruddur-post-confirmation:*
+      # Policies:
+      #   - Statement:
+      #       - Effect: Allow
+      #         Action:
+      #           - logs:CreateLogGroup
+      #         Resource: arn:aws:logs:us-east-1:767398112680:*
+      #       - Effect: Allow
+      #         Action:
+      #           - logs:CreateLogStream
+      #           - logs:PutLogEvents
+      #         Resource:
+      #           - >-
+      #             arn:aws:logs:us-east-1:767398112680:log-group:/aws/lambda/cruddur-post-confirmation:*
       SnapStart:
         ApplyOn: None
       RuntimeManagementConfig:
