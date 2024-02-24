@@ -2,7 +2,7 @@
 
 ABS_PATH=$(readlink -f "$0")
 CFN_PATH=$(dirname $ABS_PATH)
-BIN_PATH=$(dirname $ECR_PATH)
+BIN_PATH=$(dirname $CFN_PATH)
 
 # source "$CFN_PATH/networking"
 
@@ -18,4 +18,5 @@ BIN_PATH=$(dirname $ECR_PATH)
 # source "$CFN_PATH/sync"
 # source "$CFN_PATH/machineuser"
 
-source "$BIN_PATH/frontend/sync"
+# source "$BIN_PATH/frontend/static-build"
+ruby "$BIN_PATH/frontend/sync"
