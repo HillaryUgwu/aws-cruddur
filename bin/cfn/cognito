@@ -29,5 +29,5 @@ aws cloudformation deploy \
   --template-file "$CFN_PATH" \
   --no-execute-changeset \
   --tags group=cruddur-cognito-user-pool \
-  --parameter-overrides $PARAMETERS ConnectionURL=$connection_url \
+  --parameter-overrides $PARAMETERS ConnectionURL=$connection_url AWSRegion=$AWS_DEFAULT_REGION AccoundID=$AWS_ACCOUNT_ID \
   --capabilities CAPABILITY_NAMED_IAM

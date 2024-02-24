@@ -8,11 +8,12 @@ BIN_PATH=$(dirname $CFN_PATH)
 
 # source "$CFN_PATH/cluster"
 # source "$CFN_PATH/db"
-# source "$CFN_PATH/cicd"
+
 # source "$CFN_PATH/cognito"
 # source "$CFN_PATH/ddb"
 
 # source "$CFN_PATH/service"
+# source "$CFN_PATH/cicd"
 
 # source "$CFN_PATH/frontend"
 # source "$CFN_PATH/sync"

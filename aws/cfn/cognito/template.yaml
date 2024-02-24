@@ -12,6 +12,12 @@ Parameters:
   ClientName:
     Type: String
     Default: Cruddur
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+  AccoundID:
+    Type: String
+    Default: "767398112680"
   # LambdaPath:
   #   Type: String
   #   Default: /workspace/aws-bootcamp-cruddur-2023/aws/lambdas
@@ -31,9 +37,6 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: !Ref UserPoolName
-      # SignInAliases:
-      #   Email: true
-      # MfaConfiguration: False
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
@@ -47,19 +50,19 @@ Resources:
           AttributeDataType: String
           Mutable: true
           Required: true
+        - Name: email
+          AttributeDataType: String
+          Mutable: true
+          Required: true
         - Name: name
           AttributeDataType: String
           Mutable: true
           Required: true
-      # EmailVerificationMessage: "Your verification code is {####}."
-      # EmailVerificationSubject: "Your verification code"
       LambdaConfig:
         PostConfirmation: !GetAtt cruddurpostconfirmation.Arn
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
-      UserPoolAddOns:
-        AdvancedSecurityMode: 'Enabled'
-      # DeletionPolicy: Retain
+      DeletionProtection: ACTIVE
 
   CruddurAppClient:
     Type: AWS::Cognito::UserPoolClient
@@ -85,9 +88,45 @@ Resources:
                 - lambda.amazonaws.com
             Action:
               - sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+          - Effect: Allow
+            Principal:
+              Service:
+                - cognito-idp.amazonaws.com
+            Action:
+              - sts:AssumeRole
+            Condition:
+              ArnLike:
+                "AWS:SourceArn": !Sub "arn:aws:cognito-idp:${AWSRegion}:${AccoundID}:userpool/*"
+      Policies:
+        - PolicyName: AWSLambdaBasicExecutionRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                Resource: !Sub "arn:aws:logs:${AWSRegion}:${AccoundID}:*"
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub "arn:aws:logs:${AWSRegion}:${AccoundID}:log-group:/aws/lambda/*"
+  # LambdaExecutionRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: CrudCognitoLambdaExecutionRole
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - lambda.amazonaws.com
+  #           Action:
+  #             - sts:AssumeRole
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  #       - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
 
   cruddurpostconfirmation:
     Type: AWS::Lambda::Function
@@ -103,7 +142,7 @@ Resources:
         Size: 512
       Code:
         S3Bucket: !Ref BucketName
-        S3Key:  "/cognito/lambda_function.zip"
+        S3Key:  "cognito/lambda_function.zip"
       Environment:
         Variables:
           CONNECTION_URL: !Ref ConnectionURL
