@@ -1,0 +1,7 @@
+[deploy]
+stack_name = 'CrudDb'
+
+[parameters]
+NetworkingStack = 'CrudNet'
+ClusterStack = 'CrudCluster'
+MasterUsername = 'crudroot'

@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: |
+  Setup ECS Cluster
+
+# Parameters:
+  
+# Mappings:
+  
+Resources: 
+  ECSCluster: #LogicalName
+    Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName: myCluster
+      
+      # CapacityProviders:
+      #   - ""
+      # Cluster: 
+      # DefaultCapacityProviderStrategy:
+        # - CapacityProvider: 
+  
+
+# Outputs:
+
+# Metadata:

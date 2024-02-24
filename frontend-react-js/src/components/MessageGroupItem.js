@@ -5,10 +5,10 @@ import { useParams } from 'react-router-dom';
 
 export default function MessageGroupItem(props) {
   const params = useParams();
-
+  
   const classes = () => {
     let classes = ["message_group_item"];
-    if (params.message_group_uuid == props.message_group.uuid){
+    if (params.message_group_uuid === props.message_group.uuid){
       classes.push('active')
     }
     return classes.join(' ');

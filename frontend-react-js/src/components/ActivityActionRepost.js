@@ -1,8 +1,10 @@
-import {ReactComponent as RepostIcon} from './svg/repost.svg';
+import {ReactComponent as ReplyIcon} from './svg/reply.svg';
 
-export default function ActivityActionRepost(props) { 
+export default function ActivityActionReply(props) { 
   const onclick = (event) => {
+    event.preventDefault()
     console.log('trigger repost')
+    return false
   }
 
   let counter;
@@ -11,8 +13,8 @@ export default function ActivityActionRepost(props) {
   }
 
   return (
-    <div onClick={onclick} className="action activity_action_repost">
-      <RepostIcon className='icon' />
+    <div onClick={onclick} className="action activity_action_reply">
+      <ReplyIcon className='icon' />
       {counter}
     </div>
   )

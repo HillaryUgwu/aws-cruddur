@@ -1,7 +1,7 @@
   {
     "family": "frontend-react-js",
-    "executionRoleArn": "arn:aws:iam::897590156694:role/CruddurServiceExecutionRole",
-    "taskRoleArn": "arn:aws:iam::897590156694:role/CruddurTaskRole",
+    "executionRoleArn": "arn:aws:iam::767398112680:role/CruddurServiceExecutionRole",
+    "taskRoleArn": "arn:aws:iam::767398112680:role/CruddurTaskRole",
     "networkMode": "awsvpc",
     "cpu": "256",
     "memory": "512",
@@ -24,7 +24,7 @@
       },
       {
         "name": "frontend-react-js",
-        "image": "897590156694.dkr.ecr.us-east-1.amazonaws.com/frontend-react-js",
+        "image": "767398112680.dkr.ecr.us-east-1.amazonaws.com/frontend-react-js",
         "essential": true,
         "healthCheck": {
           "command": [

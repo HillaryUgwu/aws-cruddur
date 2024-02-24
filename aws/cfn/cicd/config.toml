@@ -1,0 +1,9 @@
+[deploy]
+stack_name = 'CrudCicd'
+
+[parameters]
+ServiceStack = 'CrudSrvBackendFlask'
+ClusterStack = 'CrudCluster'
+GitHubBranch = 'prod'
+GithubRepo = 'HillaryUgwu/aws-bootcamp-cruddur-2023'
+BuildSpec = 'backend-flask/buildspec.yml'

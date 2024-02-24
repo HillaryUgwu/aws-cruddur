@@ -1,0 +1,6 @@
+[deploy]
+stack_name = 'CrudSrvBackendFlask'
+
+[parameters]
+EnvFrontendUrl = 'https://ohary37.com'
+EnvBackendUrl = 'https://api.ohary37.com'

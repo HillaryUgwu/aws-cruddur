@@ -1,0 +1,7 @@
+[deploy]
+stack_name = 'CrudSyncRole'
+
+[parameters]
+GitHubOrg = 'HillaryUgwu'
+RepositoryName = 'aws-bootcamp-cruddur-2023'
+OIDCProviderArn = ''

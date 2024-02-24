@@ -2,17 +2,21 @@ import './ProfileForm.css';
 import React from "react";
 import process from 'process';
 import {getAccessToken} from 'lib/CheckAuth';
+import {put} from 'lib/Requests';
+import FormErrors from 'components/FormErrors';
 
 export default function ProfileForm(props) {
   const [bio, setBio] = React.useState('');
   const [displayName, setDisplayName] = React.useState('');
-
+  const [errors, setErrors] = React.useState('');
+  
   React.useEffect(()=>{
     setBio(props.profile.bio || '');
     setDisplayName(props.profile.display_name);
   }, [props.profile])
 
   const s3uploadkey = async (extension)=> {
+    console.log('ext',extension)
     try {
       const gateway_url = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
       await getAccessToken()
@@ -46,12 +50,11 @@ export default function ProfileForm(props) {
     const filename = file.name
     const size = file.size
     const type = file.type
-    const preview_image_url = URL.createObjectURL(file)
+    //const preview_image_url = URL.createObjectURL(file)
     console.log(filename,size,type)
     const fileparts = filename.split('.')
     const extension = fileparts[fileparts.length-1]
     const presignedurl = await s3uploadkey(extension)
-    console.log('presignedurl',presignedurl)
     try {
       console.log('s3upload')
       const res = await fetch(presignedurl, {
@@ -72,33 +75,20 @@ export default function ProfileForm(props) {
 
   const onsubmit = async (event) => {
     event.preventDefault();
-    try {
-      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/profile/update`
-      await getAccessToken()
-      const access_token = localStorage.getItem("access_token")
-      const res = await fetch(backend_url, {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${access_token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          bio: bio,
-          display_name: displayName
-        }),
-      });
-      let data = await res.json();
-      if (res.status === 200) {
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/profile/update`
+    const payload_data = {
+      bio: bio,
+      display_name: displayName
+    }
+    put(url,payload_data,{
+      auth: true,
+      setErrors: setErrors,
+      success: function(data){
         setBio(null)
         setDisplayName(null)
         props.setPopped(false)
-      } else {
-        console.log(res)
       }
-    } catch (err) {
-      console.log(err);
-    }
+    })
   }
 
   const bio_onchange = (event) => {
@@ -129,8 +119,7 @@ export default function ProfileForm(props) {
             </div>
           </div>
           <div className="popup_content">
-            
-          <input type="file" name="avatarupload" onChange={s3upload} />
+            <input type="file" name="avatarupload" onChange={s3upload} />
 
             <div className="field display_name">
               <label>Display Name</label>
@@ -149,6 +138,7 @@ export default function ProfileForm(props) {
                 onChange={bio_onchange} 
               />
             </div>
+            <FormErrors errors={errors} />
           </div>
         </form>
       </div>
