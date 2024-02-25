@@ -9,10 +9,18 @@ cfn-lint $CFN_PATH
 
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
-
 bucket_name=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
-zip -j "$FILE_PATH/lambda_function.zip" "$FILE_PATH/lambda_function.py"
+
+# Create and package psycopg2
+git clone https://github.com/jkehler/awslambda-psycopg2.git
+cp -R awslambda-psycopg2/psycopg2-3.8 $FILE_PATH/psycopg2
+
+pushd $FILE_PATH/
+zip -r lambda_function.zip .
 aws s3 cp "$FILE_PATH/lambda_function.zip" "s3://$bucket_name/cognito/"
+rm -rf psycopg2 lambda_function.zip
+popd
+rm -rf awslambda-psycopg2 
 
 aws cloudformation deploy \
   --stack-name $STACK_NAME \
