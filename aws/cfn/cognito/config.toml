@@ -2,6 +2,6 @@
 stack_name = 'CrudCognito'
 
 [parameters]
-UserPoolName = 'Cruddur-user-pool2'
-ClientName = 'Cruddur2'
-LambdaFunctionName = 'post-confirmation'
+UserPoolName = 'Cruddur-user-pool'
+ClientName = 'Cruddur'
+LambdaFunctionName = 'cruddur-post-confirmation'

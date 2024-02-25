@@ -10,16 +10,8 @@ cfn-lint $CFN_PATH
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 
-connection_url=$(aws ssm get-parameter --name /cruddur/backend-flask/CONNECTION_URL --query "Parameter.Value" --with-decryption --output text)
-export PROD_CONNECTION_URL="$connection_url" && gp env PROD_CONNECTION_URL="$connection_url"
-# aws ssm put-parameter --name /cruddur/backend-flask/CONNECTION_URL --type SecureString --value "$connection_url" --overwrite
-# aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_ACCESS_KEY_ID" --value $AWS_ACCESS_KEY_ID --overwrite
-# aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY" --value $AWS_SECRET_ACCESS_KEY --overwrite
-# aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" --value $ROLLBAR_ACCESS_TOKEN --overwrite
-# aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" --value "x-honeycomb-team=$HONEYCOMB_API_KEY" --overwrite
-
 bucket_name=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
-zip "$FILE_PATH/lambda_function.zip" "$FILE_PATH/lambda_function.py"
+zip -j "$FILE_PATH/lambda_function.zip" "$FILE_PATH/lambda_function.py"
 aws s3 cp "$FILE_PATH/lambda_function.zip" "s3://$bucket_name/cognito/"
 
 aws cloudformation deploy \
@@ -29,5 +21,5 @@ aws cloudformation deploy \
   --template-file "$CFN_PATH" \
   --no-execute-changeset \
   --tags group=cruddur-cognito-user-pool \
-  --parameter-overrides $PARAMETERS ConnectionURL=$connection_url \
+  --parameter-overrides $PARAMETERS \
   --capabilities CAPABILITY_NAMED_IAM
