@@ -12,12 +12,6 @@ Parameters:
   ClientName:
     Type: String
     Default: Cruddur
-  AWSRegion:
-    Type: String
-    Default: us-east-1
-  AccoundID:
-    Type: String
-    Default: "767398112680"
   # LambdaPath:
   #   Type: String
   #   Default: /workspace/aws-bootcamp-cruddur-2023/aws/lambdas
@@ -96,7 +90,7 @@ Resources:
               - sts:AssumeRole
             Condition:
               ArnLike:
-                "AWS:SourceArn": !Sub "arn:aws:cognito-idp:${AWSRegion}:${AccoundID}:userpool/*"
+                "AWS:SourceArn": !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
       Policies:
         - PolicyName: AWSLambdaBasicExecutionRole
           PolicyDocument:
@@ -105,12 +99,12 @@ Resources:
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
-                Resource: !Sub "arn:aws:logs:${AWSRegion}:${AccoundID}:*"
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
               - Effect: Allow
                 Action:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: !Sub "arn:aws:logs:${AWSRegion}:${AccoundID}:log-group:/aws/lambda/*"
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*"
   # LambdaExecutionRole:
   #   Type: AWS::IAM::Role
   #   Properties:

@@ -9,13 +9,18 @@ cfn-lint $CFN_PATH
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 
-connection_url=$(aws ssm get-parameter --name /cruddur/backend-flask/CONNECTION_URL --query "Parameter.Value" --with-decryption --output text)
-export PROD_CONNECTION_URL="$connection_url" && gp env PROD_CONNECTION_URL="$connection_url"
-aws ssm put-parameter --name /cruddur/backend-flask/CONNECTION_URL --type SecureString --value "$connection_url" --overwrite
-aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_ACCESS_KEY_ID" --value $AWS_ACCESS_KEY_ID --overwrite
-aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY" --value $AWS_SECRET_ACCESS_KEY --overwrite
-aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" --value $ROLLBAR_ACCESS_TOKEN --overwrite
-aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" --value "x-honeycomb-team=$HONEYCOMB_API_KEY" --overwrite
+# connection_url=$(aws ssm get-parameter --name /cruddur/backend-flask/CONNECTION_URL --query "Parameter.Value" --with-decryption --output text)
+# export PROD_CONNECTION_URL="$connection_url" && gp env PROD_CONNECTION_URL="$connection_url"
+COGNITO_USER_POOL_ID=$(aws ssm get-parameter --name /cruddur/cognito-user-pool-id --query "Parameter.Value" --with-decryption --output text)
+export AWS_COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID" && gp env AWS_COGNITO_USER_POOL_ID="$COGNITO_USER_POOL_ID"
+COGNITO_CLIENT_ID=$(aws ssm get-parameter --name /cruddur/cognito-client-id --query "Parameter.Value" --with-decryption --output text)
+export AWS_COGNITO_CLIENT_ID="$COGNITO_CLIENT_ID" && gp env AWS_COGNITO_CLIENT_ID="$COGNITO_CLIENT_ID"
+
+# aws ssm put-parameter --name /cruddur/backend-flask/CONNECTION_URL --type SecureString --value "$connection_url" --overwrite
+# aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_ACCESS_KEY_ID" --value $AWS_ACCESS_KEY_ID --overwrite
+# aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY" --value $AWS_SECRET_ACCESS_KEY --overwrite
+# aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN" --value $ROLLBAR_ACCESS_TOKEN --overwrite
+# aws ssm put-parameter --type "SecureString" --name "/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS" --value "x-honeycomb-team=$HONEYCOMB_API_KEY" --overwrite
 DDBMessageTable=$(aws dynamodb list-tables --query 'TableNames' --output text | awk '/^CrudDdb-DynamoDBTable/ {print $1; exit}')
 
 aws cloudformation deploy \
