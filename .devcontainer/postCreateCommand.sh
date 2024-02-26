@@ -11,6 +11,9 @@ sudo apt install -y postgresql-client-13 libpq-dev
 
 export GITPOD_IP=$(curl ifconfig.me)
 source "$CODESPACE_VSCODE_FOLDER/bin/rds/update-sg-rule"
+ruby "$CODESPACE_VSCODE_FOLDER/bin/backend/generate-env"
+ruby "$CODESPACE_VSCODE_FOLDER/bin/frontend/generate-env"
+#bash "$CODESPACE_VSCODE_FOLDER/bin/ecr/login"
 
 # name: fargate
 cd ..
@@ -21,6 +24,17 @@ sudo dpkg -i session-manager-plugin.deb
 npm install aws-cdk -g
 cd $CODESPACE_VSCODE_FOLDER/thumbing-serverless-cdk
 cp .env.example .env && npm i && cd ..
+
+# name: aws-sam
+wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+sudo ./sam-installation/install
+
+# name: cfn
+bundle update --bundler
+pip install cfn-lint
+cargo install cfn-guard
+gem install cfn-toml
 
 # name: react-js
 # ruby "$CODESPACE_VSCODE_FOLDER/bin/frontend/generate-env"
