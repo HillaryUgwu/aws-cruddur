@@ -21,6 +21,14 @@ Parameters:
   ConnectionURL:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /cruddur/backend-flask/CONNECTION_URL
+  NetworkingStack:
+    Type: String
+    Description: This is the base layer of networking components eg. VPC, Subnets
+    Default: CrudNet
+  DBStack:
+    Type: String
+    Description: This is the RDS DB stack
+    Default: CrudDb
 
 Resources:
   CruddurUserPool:
@@ -101,6 +109,12 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*"
+              - Effect: Allow
+                Action:
+                  - ec2:CreateNetworkInterface
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:DeleteNetworkInterface
+                Resource: "*"
 
   cruddurpostconfirmation:
     Type: AWS::Lambda::Function
@@ -125,14 +139,30 @@ Resources:
         ApplyOn: None
       RuntimeManagementConfig:
         UpdateRuntimeOn: Auto
-      # VpcConfig:
-      #   SecurityGroupIds:
-      #       Fn::ImportValue:
-      #         !Sub ${ClusterStack}ServiceSecurityGroupId
-      #   SubnetIds: { 'Fn::Split' : [ ','  , { "Fn::ImportValue": { "Fn::Sub": "${NetworkingStack}PublicSubnetIds" }}] }
-      #   VpcId:
-      #     Fn::ImportValue:
-      #       !Sub ${NetworkingStack}VpcId
+      VpcConfig:
+        SecurityGroupIds:
+          - !GetAtt CognitoLambdaSG.GroupId
+        SubnetIds: { 'Fn::Split' : [ ','  , { "Fn::ImportValue": { "Fn::Sub": "${NetworkingStack}PublicSubnetIds" }}] }
+        
+  CognitoLambdaSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Lambda function
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
+
+  RDSDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Fn::ImportValue: 
+          !Sub ${DBStack}RDSPostgresSGID
+      IpProtocol: tcp
+      FromPort: 5432
+      ToPort: 5432
+      Description: COGNITOPOSTCONF
+      SourceSecurityGroupId: !GetAtt CognitoLambdaSG.GroupId
 
   LambdaInvokePermission:
     Type: AWS::Lambda::Permission

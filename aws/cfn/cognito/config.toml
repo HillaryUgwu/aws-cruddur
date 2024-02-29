@@ -2,6 +2,8 @@
 stack_name = 'CrudCognito'
 
 [parameters]
+NetworkingStack = 'CrudNet'
+DBStack = 'CrudDb'
 UserPoolName = 'Cruddur-user-pool'
 ClientName = 'Cruddur'
 LambdaFunctionName = 'cruddur-post-confirmation'

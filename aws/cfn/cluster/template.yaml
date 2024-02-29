@@ -160,7 +160,7 @@ Resources:
         - Field: host-header
           HostHeaderConfig: 
             Values: 
-              - api.cruddur.com
+              - api.ohary37.com
       Actions: 
         - Type: forward
           TargetGroupArn:  !Ref BackendTG
