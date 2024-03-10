@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 set -e # stop the execution of the script if it fails
 
-CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cognito/template.yaml"
-CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cognito/config.toml"
-FILE_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/cognito/cruddur-post-confirmation"
+CFN_PATH="/workspaces/aws-bootcamp-cruddur-2023/aws/cfn/cognito/template.yaml"
+CONFIG_PATH="/workspaces/aws-bootcamp-cruddur-2023/aws/cfn/cognito/config.toml"
+FILE_PATH="/workspaces/aws-bootcamp-cruddur-2023/aws/cfn/cognito"
 
 cfn-lint $CFN_PATH 
 
@@ -11,16 +11,12 @@ STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 bucket_name=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
 
-# Create and package psycopg2
-git clone https://github.com/jkehler/awslambda-psycopg2.git
-cp -R awslambda-psycopg2/psycopg2-3.8 $FILE_PATH/psycopg2
-
-pushd $FILE_PATH/
+pushd $FILE_PATH/cruddur-post-confirmation/
 zip -r lambda_function.zip .
-aws s3 cp "$FILE_PATH/lambda_function.zip" "s3://$bucket_name/cognito/"
-rm -rf psycopg2 lambda_function.zip
+aws s3 cp "$FILE_PATH/cruddur-post-confirmation/lambda_function.zip" "s3://$bucket_name/lambdas/cognito/"
+find . -type f \( -not -name 'lambda_function.py' \) -exec rm -rf {} + # delete everything in the folder except the specifed
+find . -type d -empty -delete # Remove empty subdirectories
 popd
-rm -rf awslambda-psycopg2 
 
 aws cloudformation deploy \
   --stack-name $STACK_NAME \
@@ -29,5 +25,5 @@ aws cloudformation deploy \
   --template-file "$CFN_PATH" \
   --no-execute-changeset \
   --tags group=cruddur-cognito-user-pool \
-  --parameter-overrides $PARAMETERS \
+  --parameter-overrides $PARAMETERS\
   --capabilities CAPABILITY_NAMED_IAM

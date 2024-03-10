@@ -19,15 +19,15 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /cruddur/ArtifactBucketName
   ConnectionURL:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /cruddur/backend-flask/CONNECTION_URL
+   Type: AWS::SSM::Parameter::Value<String>
+   Default: /cruddur/backend-flask/CONNECTION_URL
   NetworkingStack:
     Type: String
     Description: This is the base layer of networking components eg. VPC, Subnets
     Default: CrudNet
-  DBStack:
+  CrudDBStack:
     Type: String
-    Description: This is the RDS DB stack
+    Description: This is the DB stack
     Default: CrudDb
 
 Resources:
@@ -130,10 +130,12 @@ Resources:
         Size: 512
       Code:
         S3Bucket: !Ref BucketName
-        S3Key:  "cognito/lambda_function.zip"
+        S3Key:  "lambdas/cognito/lambda_function.zip"
+      Layers:
+        - !Sub "arn:aws:lambda:${AWS::Region}:898466741470:layer:psycopg2-py38:2"
       Environment:
         Variables:
-          CONNECTION_URL: !Ref ConnectionURL
+          CONNECTION_URL: !Ref ConnectionURL      
       Role: !GetAtt LambdaExecutionRole.Arn
       SnapStart:
         ApplyOn: None
@@ -156,8 +158,8 @@ Resources:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       GroupId: 
-        Fn::ImportValue: 
-          !Sub ${DBStack}RDSPostgresSGID
+        Fn::ImportValue:
+          !Sub ${CrudDBStack}ServiceSecurityGroupId
       IpProtocol: tcp
       FromPort: 5432
       ToPort: 5432
@@ -171,9 +173,6 @@ Resources:
       FunctionName: !GetAtt cruddurpostconfirmation.Arn
       Principal: cognito-idp.amazonaws.com
       SourceArn: !GetAtt CruddurUserPool.Arn
-      # Condition:
-      #   ArnLike:
-      #     "AWS:SourceArn": !GetAtt CruddurUserPool.Arn
 
   UserPoolIdSSMParameter:
     Type: AWS::SSM::Parameter

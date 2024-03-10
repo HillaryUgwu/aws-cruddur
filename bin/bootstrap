@@ -12,3 +12,5 @@ BIN_DIR=$(dirname $ABS_PATH)
 source "$BIN_DIR/ecr/login"
 ruby "$BIN_DIR/backend/generate-env"
 ruby "$BIN_DIR/frontend/generate-env"
+export GITPOD_IP=$(curl ifconfig.me)
+source "$CODESPACE_VSCODE_FOLDER/bin/rds/update-sg-rule"

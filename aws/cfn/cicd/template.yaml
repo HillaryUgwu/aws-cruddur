@@ -134,6 +134,7 @@ Resources:
                 - ecs:ListTasks
                 - ecs:RegisterTaskDefinition
                 - ecs:UpdateService
+                - ecs:TagResource
                 Effect: Allow
                 Resource: "*"
         - PolicyName: !Sub ${AWS::StackName}CodeStarPolicy

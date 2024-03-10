@@ -113,14 +113,14 @@ Resources:
       RequiresCompatibilities:
         - 'FARGATE'
       ContainerDefinitions:
-        - Name: 'xray'
-          Image: 'public.ecr.aws/xray/aws-xray-daemon'
-          Essential: true
-          User: '1337'
-          PortMappings:
-            - Name: 'xray'
-              ContainerPort: 2000
-              Protocol: 'udp'
+        # - Name: 'xray'
+        #   Image: 'public.ecr.aws/xray/aws-xray-daemon'
+        #   Essential: true
+        #   User: '1337'
+        #   PortMappings:
+        #     - Name: 'xray'
+        #       ContainerPort: 2000
+        #       Protocol: 'udp'
         - Name: 'backend-flask'
           Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/backend-flask" 
           Essential: true
@@ -129,7 +129,7 @@ Resources:
               - 'CMD-SHELL'
               - 'python /backend-flask/bin/health-check'
             Interval: 30
-            Timeout: 6
+            Timeout: 5
             Retries: 3
             StartPeriod: 60
           PortMappings:
@@ -150,10 +150,6 @@ Resources:
               Value: !Ref EnvOtelServiceName
             - Name: 'OTEL_EXPORTER_OTLP_ENDPOINT'
               Value: !Ref EnvOtelExporterOtlpEndpoint
-            - Name: 'AWS_COGNITO_USER_POOL_ID'
-              Value: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/cognito-user-pool-id"
-            - Name: 'AWS_COGNITO_USER_POOL_CLIENT_ID'
-              Value: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/cognito-client-id"
             - Name: 'FRONTEND_URL'
               Value: !Ref EnvFrontendUrl
             - Name: 'BACKEND_URL'
@@ -161,6 +157,10 @@ Resources:
             - Name: 'AWS_DEFAULT_REGION'
               Value: !Ref AWS::Region
           Secrets:
+            - Name: 'AWS_COGNITO_USER_POOL_ID'
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/cognito-user-pool-id"
+            - Name: 'AWS_COGNITO_USER_POOL_CLIENT_ID'
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/cognito-client-id"
             - Name: 'AWS_ACCESS_KEY_ID'
               ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID"
             - Name: 'AWS_SECRET_ACCESS_KEY'
@@ -203,7 +203,7 @@ Resources:
                 Action:
                   - 'ssm:GetParameters'
                   - 'ssm:GetParameter'
-                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/${ServiceName}/*'
+                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
   TaskRole:
@@ -233,7 +233,7 @@ Resources:
                 Resource: '*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
-        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+        # - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
 
 Outputs:
   ServiceName:

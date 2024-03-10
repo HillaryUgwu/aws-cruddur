@@ -1,0 +1,13 @@
+#! /usr/bin/bash
+set -e # stop if it fails at any point
+
+CYAN='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL="Frontend static build and deploy"
+printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+
+ABS_PATH=$(readlink -f "$0")
+FRONTEND_PATH=$(dirname $ABS_PATH)
+
+bash "$FRONTEND_PATH/static-build"
+ruby "$FRONTEND_PATH/sync"

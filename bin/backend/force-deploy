@@ -1,6 +1,6 @@
 #! /usr/bin/bash
 
-CLUSTER_NAME="CruddurFargateCluster"
+CLUSTER_NAME="CrudClusterFargateCluster"
 SERVICE_NAME="backend-flask"
 TASK_DEFINTION_FAMILY="backend-flask"
 

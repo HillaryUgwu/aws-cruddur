@@ -23,3 +23,18 @@ aws s3 mb "s3://$BUCKET"
 aws s3 mb "s3://codepipeline-$BUCKET"
 aws ssm put-parameter --name /cruddur/ArtifactBucketName --type String --value "$BUCKET" --overwrite
 aws ssm put-parameter --name /AcmCertificateArn --type String --value "$CertificateArn" --overwrite
+
+# Setup Alarm and billing configuration
+aws sns create-topic --name billing-alarm
+
+aws sns subscribe \
+    --topic-arn TopicARN \
+    --protocol email \
+    --notification-endpoint ohary37@email.com
+
+aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm-config.json
+
+aws budgets create-budget \
+    --account-id $AWS_ACCOUNT_ID \
+    --budget file://aws/json/budget.json \
+    --notifications-with-subscribers file://aws/json/budget-notifications-with-subscribers.json

@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 set -e # stop the execution of the script if it fails
 
-FUNC_DIR="/workspace/aws-bootcamp-cruddur-2023/aws/lambdas/cruddur-messaging-stream/"
-TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/ddb/template.yaml"
-CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/ddb/config.toml"
+FUNC_DIR="/workspaces/aws-bootcamp-cruddur-2023/aws/lambdas/cruddur-messaging-stream/"
+TEMPLATE_PATH="/workspaces/aws-bootcamp-cruddur-2023/aws/cfn/ddb/template.yaml"
+CONFIG_PATH="/workspaces/aws-bootcamp-cruddur-2023/aws/cfn/ddb/config.toml"
 ARTIFACT_BUCKET=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
 
 sam validate -t $TEMPLATE_PATH
@@ -21,7 +21,7 @@ sam build \
 #--parameter-overrides
 
 # TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/template.yaml"
-OUTPUT_TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/packaged.yaml"
+OUTPUT_TEMPLATE_PATH="/workspaces/aws-bootcamp-cruddur-2023/.aws-sam/build/packaged.yaml"
 
 echo "== package"
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-package.html
@@ -33,7 +33,7 @@ sam package \
   --s3-prefix "ddb"
 
 echo "== deploy"
-PACKAGED_TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/packaged.yaml"
+PACKAGED_TEMPLATE_PATH="/workspaces/aws-bootcamp-cruddur-2023/.aws-sam/build/packaged.yaml"
 
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html
 sam deploy \

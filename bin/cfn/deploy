@@ -16,8 +16,8 @@ BIN_PATH=$(dirname $CFN_PATH)
 # source "$CFN_PATH/cicd"
 
 # source "$CFN_PATH/frontend"
+# source "$BIN_PATH/avatar/deploy"
 # source "$CFN_PATH/sync"
 # source "$CFN_PATH/machineuser"
 
-# source "$BIN_PATH/frontend/static-build"
-ruby "$BIN_PATH/frontend/sync"
+# source "$BIN_PATH/frontend/deploy-static"

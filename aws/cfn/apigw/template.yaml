@@ -1,0 +1,182 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: |
+  - HTTP API Gateway with JWT Lambda Authorizer, 
+  - Ruby Lambda Function
+
+Parameters:
+  LambdaAuthorizerFunctionName:
+    Type: String
+    Default: LambdaAuthorizerFunction
+  UploadAvatarLambdaFunctionName:
+    Type: String
+    Default: cruddur-upload-avatar-lambda
+  UploadAvatarBucketName:
+    Type: String
+    Default: cruddur-upload-avatar
+  ArtifactBucketName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cruddur/ArtifactBucketName
+  CognitoUserPoolId:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cruddur/cognito-user-pool-id
+  CognitoClientId:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cruddur/cognito-client-id
+  ApiGwName:
+    Type: String
+    Default: CrudApi
+
+Resources:
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Ref ApiGwName
+      ProtocolType: HTTP
+      # Target: !GetAtt UploadAvatarLambda.Arn
+
+  LambdaAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId: !Ref HttpApi
+      AuthorizerType: REQUEST
+      AuthorizerPayloadFormatVersion: "2.0"
+      AuthorizerResultTtlInSeconds: 0
+      EnableSimpleResponses: true
+      IdentitySource: 
+        - "$request.header.Authorization"
+      Name: MyAuthorizer
+      AuthorizerUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaAuthorizerFunction.Arn}/invocations"
+
+  UploadAvatarIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref HttpApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UploadAvatarLambda.Arn}/invocations'
+      PayloadFormatVersion: "2.0"
+
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: '$default'
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref UploadAvatarIntegration
+          
+  AvatarsKeyUploadRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'POST /avatars/key_upload'
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref UploadAvatarIntegration
+      AuthorizationType: REQUEST
+      AuthorizerId: !Ref LambdaAuthorizer
+
+  ProxyOptionsRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: 'ANY /{proxy+}'
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref UploadAvatarIntegration
+      AuthorizationType: NONE
+
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref LambdaAuthorizerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*/*/*
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CrudUploadAvatarLambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaExecutionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+              - Effect: Allow
+                Action: 
+                  - s3:PutObject,
+                Resource: !Sub "arn:aws:s3:::${UploadAvatarBucketName}/*"
+
+  LambdaAuthorizerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref LambdaAuthorizerFunctionName
+      MemorySize: 128
+      Timeout: 3
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      Code:
+        S3Bucket: !Ref ArtifactBucketName
+        S3Key:  "lambdas/lambda-authorizer/lambda_function.zip"
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref CognitoUserPoolId
+          CLIENT_ID: !Ref CognitoClientId      
+      Role: !GetAtt LambdaExecutionRole.Arn
+      SnapStart:
+        ApplyOn: None
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+
+  UploadAvatarLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref UploadAvatarLambdaFunctionName
+      MemorySize: 128
+      Timeout: 3
+      Handler: function.handler
+      Runtime: ruby3.2
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      Code:
+        S3Bucket: !Ref ArtifactBucketName
+        S3Key:  "lambdas/cruddur-upload-avatar/lambda_function.zip"
+      Environment:
+        Variables:
+          UPLOADS_BUCKET_NAME: !Ref UploadAvatarBucketName      
+      Role: !GetAtt LambdaExecutionRole.Arn
+      SnapStart:
+        ApplyOn: None
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+
+  SSMParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /cruddur/api-gateway-invoke-url
+      Type: String
+      Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"

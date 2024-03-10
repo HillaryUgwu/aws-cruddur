@@ -1,2 +1,6 @@
 [deploy]
 stack_name = 'CrudCluster'
+
+[parameters]
+DomainName = 'ohary37.com'
+SubDomainName = 'api.ohary37.com'
