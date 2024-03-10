@@ -32,7 +32,7 @@ Resources:
     Properties:
       Name: !Ref ApiGwName
       ProtocolType: HTTP
-      # Target: !GetAtt UploadAvatarLambda.Arn
+      Target: !GetAtt UploadAvatarLambda.Arn
 
   LambdaAuthorizer:
     Type: AWS::ApiGatewayV2::Authorizer
@@ -55,15 +55,15 @@ Resources:
       IntegrationUri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UploadAvatarLambda.Arn}/invocations'
       PayloadFormatVersion: "2.0"
 
-  DefaultRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref HttpApi
-      RouteKey: '$default'
-      Target: !Join
-        - '/'
-        - - 'integrations'
-          - !Ref UploadAvatarIntegration
+  # DefaultRoute:
+  #   Type: AWS::ApiGatewayV2::Route
+  #   Properties:
+  #     ApiId: !Ref HttpApi
+  #     RouteKey: '$default'
+  #     Target: !Join
+  #       - '/'
+  #       - - 'integrations'
+  #         - !Ref UploadAvatarIntegration
           
   AvatarsKeyUploadRoute:
     Type: AWS::ApiGatewayV2::Route
