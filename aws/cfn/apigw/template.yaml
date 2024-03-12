@@ -32,7 +32,9 @@ Resources:
     Properties:
       Name: !Ref ApiGwName
       ProtocolType: HTTP
-      Target: !GetAtt UploadAvatarLambda.Arn
+      Target: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UploadAvatarLambda.Arn}/invocations"
+      # CredentialsArn: null
+      RouteKey: $default
 
   LambdaAuthorizer:
     Type: AWS::ApiGatewayV2::Authorizer
@@ -81,7 +83,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref HttpApi
-      RouteKey: 'ANY /{proxy+}'
+      RouteKey: 'OPTIONS /{proxy+}'
       Target: !Join
         - '/'
         - - 'integrations'
