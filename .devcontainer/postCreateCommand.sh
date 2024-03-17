@@ -2,6 +2,7 @@
 
 # name: Getting started
 cd $CODESPACE_VSCODE_FOLDER/..
+export WORKSAPCE_ROOT_PATH=$CODESPACE_VSCODE_FOLDER
 bash $CODESPACE_VSCODE_FOLDER/bin/bootstrap
 
 # name: postgres
@@ -13,7 +14,7 @@ sudo apt install -y postgresql-13 postgresql-client-13 libpq-dev
 
 
 # # All included in boostrap
-# export GITPOD_IP=$(curl ifconfig.me)
+export WORKSPACE_IP=$(curl ifconfig.me)
 # source "$CODESPACE_VSCODE_FOLDER/bin/rds/update-sg-rule"
 # ruby "$CODESPACE_VSCODE_FOLDER/bin/backend/generate-env"
 # ruby "$CODESPACE_VSCODE_FOLDER/bin/frontend/generate-env"

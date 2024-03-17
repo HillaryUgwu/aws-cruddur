@@ -16,7 +16,7 @@ export default function ProfileForm(props) {
   }, [props.profile])
 
   const s3uploadkey = async (extension)=> {
-    console.log('extension',extension)
+    // console.log('extension',extension)
     try {
       const gateway_url = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
       console.log("gateway_url==========",gateway_url)
@@ -51,11 +51,13 @@ export default function ProfileForm(props) {
     const filename = file.name
     const size = file.size
     const type = file.type
+
     //const preview_image_url = URL.createObjectURL(file)
-    console.log(filename,size,type)
+    console.log("filename,size,type",filename,size,type)
     const fileparts = filename.split('.')
     const extension = fileparts[fileparts.length-1]
     const presignedurl = await s3uploadkey(extension)
+    console.log('presignedurl', presignedurl)
     try {
       console.log('s3upload')
       const res = await fetch(presignedurl, {
@@ -67,10 +69,10 @@ export default function ProfileForm(props) {
       if (res.status === 200) {
         
       } else {
-        console.log(res)
+        console.log("Result",res)
       }
     } catch (err) {
-      console.log(err);
+      console.log("error",err);
     }
   }
 

@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 set -e # stop the execution of the script if it fails
 
-CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/machine-user/template.yaml"
-CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/machine-user/config.toml"
+CFN_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/machine-user/template.yaml"
+CONFIG_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/machine-user/config.toml"
 
 cfn-lint $CFN_PATH
 

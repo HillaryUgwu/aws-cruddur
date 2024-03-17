@@ -1,0 +1,31 @@
+#!/usr/bin/bash
+
+green="\033[0;32m"
+yellow="\033[0;33m"
+red="\033[0;31m"
+cyan='\033[1;36m'
+NO_COLOR='\033[0m'
+LABEL=$2
+
+
+manage_print() {
+    case $1 in
+        g|GREEN|green)
+            color=$green
+            ;;
+        y|YELLOW|yellow)
+            color=$yellow
+            ;;
+        r|RED|red)
+            color=$red
+            ;;
+        c|CYAN|cyan)
+            color=$cyan
+            ;;
+        *)
+            color=$NO_COLOR
+            ;;
+    esac
+}
+manage_print $1
+printf "${color} ${LABEL}${NO_COLOR}\n"

@@ -17,6 +17,7 @@ BIN_PATH=$(dirname $CFN_PATH)
 
 # source "$CFN_PATH/frontend"
 # source "$BIN_PATH/avatar/deploy"
+# source "$CFN_PATH/apigw"
 # source "$CFN_PATH/sync"
 # source "$CFN_PATH/machineuser"
 

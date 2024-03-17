@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 set -e # stop the execution of the script if it fails
 
-CFN_PATH="/workspaces/aws-bootcamp-cruddur-2023/aws/cfn/cognito/template.yaml"
-CONFIG_PATH="/workspaces/aws-bootcamp-cruddur-2023/aws/cfn/cognito/config.toml"
-FILE_PATH="/workspaces/aws-bootcamp-cruddur-2023/aws/cfn/cognito"
+CFN_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/cognito/template.yaml"
+CONFIG_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/cognito/config.toml"
+FILE_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/cognito"
 
 cfn-lint $CFN_PATH 
 

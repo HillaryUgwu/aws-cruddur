@@ -33,8 +33,7 @@ Resources:
       Name: !Ref ApiGwName
       ProtocolType: HTTP
       Target: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UploadAvatarLambda.Arn}/invocations"
-      # CredentialsArn: null
-      RouteKey: $default
+      # RouteKey: $default
 
   LambdaAuthorizer:
     Type: AWS::ApiGatewayV2::Authorizer
@@ -48,7 +47,7 @@ Resources:
         - "$request.header.Authorization"
       Name: MyAuthorizer
       AuthorizerUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaAuthorizerFunction.Arn}/invocations"
-
+      
   UploadAvatarIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -76,7 +75,7 @@ Resources:
         - '/'
         - - 'integrations'
           - !Ref UploadAvatarIntegration
-      AuthorizationType: REQUEST
+      AuthorizationType: CUSTOM
       AuthorizerId: !Ref LambdaAuthorizer
 
   ProxyOptionsRoute:
@@ -90,13 +89,23 @@ Resources:
           - !Ref UploadAvatarIntegration
       AuthorizationType: NONE
 
+  # Permission for API Gateway to invoke the Lambda authorizer function
   LambdaInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !Ref LambdaAuthorizerFunction
+      FunctionName: !GetAtt LambdaAuthorizerFunction.Arn
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*/*/*
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*/*"
+
+  # Permission for API Gateway to invoke the Lambda integration function
+  LambdaAuthorizerInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt UploadAvatarLambda.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*/*"
 
   LambdaExecutionRole:
     Type: AWS::IAM::Role

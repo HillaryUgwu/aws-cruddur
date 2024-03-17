@@ -8,6 +8,16 @@ printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
 
 ABS_PATH=$(readlink -f "$0")
 FRONTEND_PATH=$(dirname $ABS_PATH)
+BIN_PATH=$(dirname $FRONTEND_PATH)
 
+bash $BIN_PATH/print_colored y "Warning: This script is running the 'export' command!"
+bash $BIN_PATH/print_colored y "Note: The exported variables will not persist after the script terminates."
+
+apigateway_url=$(aws ssm get-parameter --name /cruddur/api-gateway-invoke-url --query "Parameter.Value" --with-decryption --output text)
+export API_GATEWAY_ENDPOINT_URL="$apigateway_url" && gp env API_GATEWAY_ENDPOINT_URL="$apigateway_url"
+
+bash "$BIN_PATH/bootstrap"
 bash "$FRONTEND_PATH/static-build"
 ruby "$FRONTEND_PATH/sync"
+
+bash $BIN_PATH/print_colored y "Consider running the 'export' command directly on the terminal if you want the variables to persist for the current shell seesion"
