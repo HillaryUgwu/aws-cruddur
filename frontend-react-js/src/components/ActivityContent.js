@@ -5,7 +5,7 @@ import { format_datetime, time_ago, time_future } from '../lib/DateTimeFormats';
 import {ReactComponent as BombIcon} from './svg/bomb.svg';
 
 export default function ActivityContent(props) {
-
+  console.log("Props",props)
   let expires_at;
   if (props.activity.expires_at) {
     expires_at =  <div className="expires_at" title={format_datetime(props.activity.expires_at)}>
@@ -18,6 +18,7 @@ export default function ActivityContent(props) {
   return (
     <div className='activity_content_wrap'>
       <Link className='activity_avatar'to={`/@`+props.activity.handle} ></Link>
+      {/* <ProfileAvatar id={props.user.cognito_user_uuid} /> */}
       <div className='activity_content'>
         <div className='activity_meta'>
           <div className='activity_identity' >

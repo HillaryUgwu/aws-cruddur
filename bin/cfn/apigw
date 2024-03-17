@@ -11,11 +11,15 @@ STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 bucket_name=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
 
-# bundle config set --local deployment 'true' # run this to generate out the correct bundle file
-
 zip_upload(){
   cp -r $FILE_PATH/lambdas/$1 $FILE_PATH/cfn/apigw
   pushd $FILE_PATH/cfn/apigw/$1/
+  if [ "$1" = "cruddur-upload-avatar" ]; then
+    rm -rf $FILE_PATH/cfn/apigw/$1/Gem*
+    bundle init && echo "gem 'ox'" >> Gemfile && echo "gem 'jwt'" >> Gemfile
+    bundle lock --add-platform x86_64-linux
+    bundle config set --local deployment 'true' && bundle install
+  fi
   zip -r lambda_function.zip .
   aws s3 cp "$FILE_PATH/cfn/apigw/$1/lambda_function.zip" "s3://$bucket_name/lambdas/$1/"
   popd

@@ -46,7 +46,7 @@ export default function ProfileForm(props) {
     }
   }
   const s3upload = async (event)=> {
-    console.log('event',event)
+    console.log('S3Upload event',event)
     const file = event.target.files[0]
     const filename = file.name
     const size = file.size

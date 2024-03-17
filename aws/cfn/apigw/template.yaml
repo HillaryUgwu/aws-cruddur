@@ -133,7 +133,7 @@ Resources:
                 Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
               - Effect: Allow
                 Action: 
-                  - s3:PutObject,
+                  - s3:PutObject
                 Resource: !Sub "arn:aws:s3:::${UploadAvatarBucketName}/*"
 
   LambdaAuthorizerFunction:
