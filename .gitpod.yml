@@ -22,7 +22,7 @@ tasks:
       sudo ./aws/install
       cd $THEIA_WORKSPACE_ROOT
     command: |
-      export WORKSAPCE_ROOT_PATH=$THEIA_WORKSPACE_ROOT && gp env WORKSAPCE_ROOT_PATH=$THEIA_WORKSPACE_ROOT
+      export WORKSPACE_ROOT_PATH=$THEIA_WORKSPACE_ROOT && gp env WORKSPACE_ROOT_PATH=$THEIA_WORKSPACE_ROOT
       export WORKSPACE_IP=$(curl ifconfig.me)
       bash "$THEIA_WORKSPACE_ROOT/bin/bootstrap"
   
