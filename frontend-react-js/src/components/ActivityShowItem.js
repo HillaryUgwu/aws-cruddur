@@ -8,6 +8,7 @@ import ActivityActionShare  from '../components/ActivityActionShare';
 import { Link } from "react-router-dom";
 import { format_datetime, time_ago, time_future } from '../lib/DateTimeFormats';
 import {ReactComponent as BombIcon} from './svg/bomb.svg';
+import ProfileAvatar from 'components/ProfileAvatar'
 
 export default function ActivityShowItem(props) {
 
@@ -18,7 +19,7 @@ export default function ActivityShowItem(props) {
       <div className="acitivty_main">
         <div className='activity_content_wrap'>
           <div className='activity_content'>
-            <Link className='activity_avatar'to={`/@`+props.activity.handle} ></Link>
+            <ProfileAvatar id={props.activity.cognito_user_uuid} />
             <div className='activity_meta'>
               <div className='activity_identity' >
                 <Link className='display_name' to={`/@`+props.activity.handle}>{props.activity.display_name}</Link>

@@ -1,6 +1,7 @@
 
 SELECT 
   users.uuid,
+  users.cognito_user_id as cognito_user_uuid,
   users.display_name,
   users.handle,
   CASE users.cognito_user_id = %(cognito_user_id)s
