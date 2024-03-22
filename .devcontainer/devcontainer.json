@@ -20,7 +20,7 @@
 				"ms-azuretools.vscode-docker"
 			],
 			"settings": {
-				"workbench.colorTheme": "Default Dark+ Experimental"
+				"workbench.colorTheme": "Visual Studio Dark"
 			}
 		}
 	}

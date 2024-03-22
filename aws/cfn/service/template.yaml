@@ -32,42 +32,18 @@ Parameters:
   TaskFamily:
     Type: String
     Default: backend-flask
-  EcrImage:
-    Type: String
-    Default: '767398112680.dkr.ecr.us-east-1.amazonaws.com/backend-flask'
   EnvOtelServiceName:
     Type: String
     Default: backend-flask
   EnvOtelExporterOtlpEndpoint:
     Type: String
     Default: https://api.honeycomb.io
-  EnvAWSCognitoUserPoolId:
-    Type: String
-    Default: us-east-1_WUU4d4exl
-  EnvCognitoUserPoolClientId:
-    Type: String
-    Default: 303i8fkfl7vv2uaf0gs7n5cfuu
   EnvFrontendUrl:
     Type: String
     Default: "*"
   EnvBackendUrl:
     Type: String
     Default: "*"
-  SecretsAWSAccessKeyId:
-    Type: String
-    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID'
-  SecretsSecretAccessKey:
-    Type: String
-    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY'
-  SecretsConnectionUrl:
-    Type: String
-    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/CONNECTION_URL'
-  SecretsRollbarAccessToken:
-    Type: String
-    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN'
-  SecretsOtelExporterOltpHeaders:
-    Type: String
-    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS'
   DDBMessageTable:
     Type: String
     Default: cruddur-messages
@@ -137,23 +113,23 @@ Resources:
       RequiresCompatibilities:
         - 'FARGATE'
       ContainerDefinitions:
-        - Name: 'xray'
-          Image: 'public.ecr.aws/xray/aws-xray-daemon'
-          Essential: true
-          User: '1337'
-          PortMappings:
-            - Name: 'xray'
-              ContainerPort: 2000
-              Protocol: 'udp'
+        # - Name: 'xray'
+        #   Image: 'public.ecr.aws/xray/aws-xray-daemon'
+        #   Essential: true
+        #   User: '1337'
+        #   PortMappings:
+        #     - Name: 'xray'
+        #       ContainerPort: 2000
+        #       Protocol: 'udp'
         - Name: 'backend-flask'
-          Image: !Ref EcrImage 
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/backend-flask" 
           Essential: true
           HealthCheck:
             Command:
               - 'CMD-SHELL'
               - 'python /backend-flask/bin/health-check'
             Interval: 30
-            Timeout: 6
+            Timeout: 5
             Retries: 3
             StartPeriod: 60
           PortMappings:
@@ -174,10 +150,6 @@ Resources:
               Value: !Ref EnvOtelServiceName
             - Name: 'OTEL_EXPORTER_OTLP_ENDPOINT'
               Value: !Ref EnvOtelExporterOtlpEndpoint
-            - Name: 'AWS_COGNITO_USER_POOL_ID'
-              Value: !Ref EnvAWSCognitoUserPoolId
-            - Name: 'AWS_COGNITO_USER_POOL_CLIENT_ID'
-              Value: !Ref EnvCognitoUserPoolClientId
             - Name: 'FRONTEND_URL'
               Value: !Ref EnvFrontendUrl
             - Name: 'BACKEND_URL'
@@ -185,16 +157,20 @@ Resources:
             - Name: 'AWS_DEFAULT_REGION'
               Value: !Ref AWS::Region
           Secrets:
+            - Name: 'AWS_COGNITO_USER_POOL_ID'
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/cognito-user-pool-id"
+            - Name: 'AWS_COGNITO_USER_POOL_CLIENT_ID'
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/cognito-client-id"
             - Name: 'AWS_ACCESS_KEY_ID'
-              ValueFrom: !Ref SecretsAWSAccessKeyId
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID"
             - Name: 'AWS_SECRET_ACCESS_KEY'
-              ValueFrom: !Ref SecretsSecretAccessKey
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY"
             - Name: 'CONNECTION_URL'
-              ValueFrom: !Ref SecretsConnectionUrl
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/backend-flask/CONNECTION_URL"
             - Name: 'ROLLBAR_ACCESS_TOKEN'
-              ValueFrom: !Ref SecretsRollbarAccessToken
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN"
             - Name: 'OTEL_EXPORTER_OTLP_HEADERS'
-              ValueFrom: !Ref SecretsOtelExporterOltpHeaders
+              ValueFrom: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS"
   ExecutionRole:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
     Type: AWS::IAM::Role
@@ -227,7 +203,7 @@ Resources:
                 Action:
                   - 'ssm:GetParameters'
                   - 'ssm:GetParameter'
-                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/${ServiceName}/*'
+                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
   TaskRole:
@@ -257,7 +233,7 @@ Resources:
                 Resource: '*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
-        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+        # - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
 
 Outputs:
   ServiceName:

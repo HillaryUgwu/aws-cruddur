@@ -1,14 +1,18 @@
 #!/usr/bin/bash
 set -e # stop if it fails at any point
 
-CYAN='\033[1;36m'
-NO_COLOR='\033[0m'
-LABEL="bootstrap"
-printf "${CYAN}====== ${LABEL}${NO_COLOR}\n"
-
 ABS_PATH=$(readlink -f "$0")
 BIN_DIR=$(dirname $ABS_PATH)
 
-source "$BIN_DIR/ecr/login"
+bash $BIN_DIR/print_colored cyan "bootstrap =========="
+bash $BIN_DIR/print_colored y "Warning: This script is running the 'export' command!"
+bash $BIN_DIR/print_colored y "Note: The exported variables will not persist after the script terminates."
+bash $BIN_DIR/print_colored y "Consider running the 'export' command directly on the terminal if you want the variables to persist for the current shell seesion"
+
+export WORKSPACE_IP=$(curl ifconfig.me)
+bash "$BIN_DIR/ecr/login"
 ruby "$BIN_DIR/backend/generate-env"
 ruby "$BIN_DIR/frontend/generate-env"
+bash "$WORKSAPCE_ROOT_PATH/bin/rds/update-sg-rule"
+
+bash $BIN_DIR/print_colored y "Consider running the 'export' command directly on the terminal if you want the variables to persist for the current shell seesion"

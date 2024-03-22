@@ -3,6 +3,7 @@ import Search from '../components/Search';
 import TrendingSection from '../components/TrendingsSection'
 import SuggestedUsersSection from '../components/SuggestedUsersSection'
 import JoinSection from '../components/JoinSection'
+import ProfileAvatar from 'components/ProfileAvatar'
 
 export default function DesktopSidebar(props) {
   const trendings = [
@@ -10,11 +11,7 @@ export default function DesktopSidebar(props) {
     {"hashtag": "CloudProject", "count": 8253 },
     {"hashtag": "AWS", "count": 9053 },
     {"hashtag": "FreeWillyReboot", "count": 7753 }
-  ]
-
-  const users = [
-    {"display_name": "Hillary Ugwu", "handle": "ohahuru"}
-  ]
+  ]  
 
   let trending;
   if (props.user) {
@@ -23,6 +20,14 @@ export default function DesktopSidebar(props) {
 
   let suggested;
   if (props.user) {
+    const users = [
+      {
+        "cognito_user_uuid": props.user.cognito_user_uuid, 
+        "display_name": props.user.display_name, 
+        "handle":  props.user.handle
+      }
+    ]
+    // console.log('suggested user props',props,users)
     suggested = <SuggestedUsersSection users={users} />
   }
   let join;
@@ -36,9 +41,10 @@ export default function DesktopSidebar(props) {
       <Search />
       {trending}
       {suggested}
+      {/* <ProfileAvatar id={props.users.cognito_user_uuid} /> */}
       {join}
       <footer>
-        <a href="/about!">About</a>
+        <a href="/about">About</a>
         <a href="/terms-of-service">Terms of Service</a>
         <a href="/privacy-policy">Privacy Policy</a>
       </footer>

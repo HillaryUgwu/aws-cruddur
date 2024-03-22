@@ -16,9 +16,10 @@ export default function ProfileForm(props) {
   }, [props.profile])
 
   const s3uploadkey = async (extension)=> {
-    console.log('ext',extension)
+    // console.log('extension',extension)
     try {
       const gateway_url = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
+      console.log("gateway_url==========",gateway_url)
       await getAccessToken()
       const access_token = localStorage.getItem("access_token")
       const json = {
@@ -45,16 +46,18 @@ export default function ProfileForm(props) {
     }
   }
   const s3upload = async (event)=> {
-    console.log('event',event)
+    console.log('S3Upload event',event)
     const file = event.target.files[0]
     const filename = file.name
     const size = file.size
     const type = file.type
+
     //const preview_image_url = URL.createObjectURL(file)
-    console.log(filename,size,type)
+    console.log("filename,size,type",filename,size,type)
     const fileparts = filename.split('.')
     const extension = fileparts[fileparts.length-1]
     const presignedurl = await s3uploadkey(extension)
+    console.log('presignedurl', presignedurl)
     try {
       console.log('s3upload')
       const res = await fetch(presignedurl, {
@@ -66,20 +69,22 @@ export default function ProfileForm(props) {
       if (res.status === 200) {
         
       } else {
-        console.log(res)
+        console.log("Result",res)
       }
     } catch (err) {
-      console.log(err);
+      console.log("error",err);
     }
   }
 
   const onsubmit = async (event) => {
     event.preventDefault();
+    // event.persist()
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/profile/update`
     const payload_data = {
       bio: bio,
       display_name: displayName
     }
+    console.log('Profile form payload',url,payload_data)
     put(url,payload_data,{
       auth: true,
       setErrors: setErrors,

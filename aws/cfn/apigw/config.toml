@@ -1,0 +1,8 @@
+[deploy]
+stack_name = 'CrudApi'
+
+[parameters]
+LambdaAuthorizerFunctionName = 'lambda-authorizer-function'
+UploadAvatarBucketName = 'ohary-cruddur-uploaded-avatars'
+ApiGwName = 'CrudApi'
+UploadAvatarLambdaFunctionName = 'cruddur-upload-avatar-lambda'

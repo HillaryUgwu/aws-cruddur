@@ -106,8 +106,8 @@ Resources:
       Value: !Sub 'postgresql://${MasterUsername}:${MasterUserPassword}@${Database.Endpoint.Address}:5432/cruddur'
       Description: 'The connection URL for the PostgreSQL RDS instance'
       
-#Outputs:
-#  ServiceSecurityGroupId:
-#    Value: !GetAtt ServiceSG.GroupId
-#    Export:
-#      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
+Outputs:
+ ServiceSecurityGroupId:
+   Value: !GetAtt RDSPostgresSG.GroupId
+   Export:
+     Name: !Sub "${AWS::StackName}RDSPostgresSGID"

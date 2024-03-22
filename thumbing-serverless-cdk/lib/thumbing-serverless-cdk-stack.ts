@@ -62,13 +62,30 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     //lambda.addToRolePolicy(snsPublishPolicy);
   }
 
-  createBucket(bucketName: string): s3.IBucket {
+  // createBucket(bucketName: string): s3.IBucket {
+  //   const bucket = new s3.Bucket(this, 'UploadsBucket', {
+  //     bucketName: bucketName,
+  //     removalPolicy: cdk.RemovalPolicy.DESTROY
+  //   });
+  //   return bucket;
+  // }
+  createBucket(bucketName: string): s3.Bucket {
     const bucket = new s3.Bucket(this, 'UploadsBucket', {
       bucketName: bucketName,
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
+
+    // Add CORS configuration to the bucket
+    bucket.addCorsRule({
+      allowedHeaders: ['*'],
+      allowedMethods: [s3.HttpMethods.PUT],
+      allowedOrigins: ['*'], // Allow all origins
+      exposedHeaders: ['x-amz-server-side-encryption', 'x-amz-request-id', 'x-amz-id-2'],
+      maxAge: 3000
+    });
+
     return bucket;
-  }
+ }
 
   importBucket(bucketName: string): s3.IBucket {
     const bucket = s3.Bucket.fromBucketName(this,"AssetsBucket",bucketName);

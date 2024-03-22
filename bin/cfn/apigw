@@ -1,0 +1,40 @@
+#! /usr/bin/env bash
+set -e # stop the execution of the script if it fails
+
+CFN_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/apigw/template.yaml"
+CONFIG_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/apigw/config.toml"
+FILE_PATH="$WORKSAPCE_ROOT_PATH/aws"
+
+cfn-lint $CFN_PATH 
+
+STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
+PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+bucket_name=$(aws ssm get-parameter --name /cruddur/ArtifactBucketName --query "Parameter.Value" --output text)
+
+zip_upload(){
+  cp -r $FILE_PATH/lambdas/$1 $FILE_PATH/cfn/apigw
+  pushd $FILE_PATH/cfn/apigw/$1/
+  if [ "$1" = "cruddur-upload-avatar" ]; then
+    rm -rf $FILE_PATH/cfn/apigw/$1/Gem*
+    bundle init && echo "gem 'ox'" >> Gemfile && echo "gem 'jwt'" >> Gemfile
+    bundle lock --add-platform x86_64-linux
+    bundle config set --local deployment 'true' && bundle install
+  fi
+  zip -r lambda_function.zip .
+  aws s3 cp "$FILE_PATH/cfn/apigw/$1/lambda_function.zip" "s3://$bucket_name/lambdas/$1/"
+  popd
+  rm -rf $FILE_PATH/cfn/apigw/$1/
+}
+
+zip_upload "lambda-authorizer"
+zip_upload "cruddur-upload-avatar"
+
+aws cloudformation deploy \
+  --stack-name $STACK_NAME \
+  --s3-prefix cognito \
+  --region $AWS_DEFAULT_REGION \
+  --template-file "$CFN_PATH" \
+  --no-execute-changeset \
+  --tags group=cruddur-cognito-user-pool \
+  --parameter-overrides $PARAMETERS\
+  --capabilities CAPABILITY_NAMED_IAM

@@ -4,3 +4,4 @@ stack_name = 'CrudFrontend'
 [parameters]
 WwwBucketName = 'www.ohary37.com'
 RootBucketName = 'ohary37.com'
+AssetsBucketName = 'assets.ohary37.com'

@@ -7,14 +7,16 @@ PROJECT_PATH=$(dirname $BIN_PATH)
 SERVERLESS_PROJECT_PATH="$PROJECT_PATH/thumbing-serverless-cdk"
 LAMBDA_IMAGE_PROCESS_PATH="$PROJECT_PATH/aws/lambdas/process-images"
 
-cd $SERVERLESS_PROJECT_PATH
-
-npm install
-rm -rf node_modules/sharp
-SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm install --arch=x64 --platform=linux --libc=glibc sharp
-
 cd $LAMBDA_IMAGE_PROCESS_PATH
 
 npm init -y
 npm i sharp 
 npm i @aws-sdk/client-s3
+
+cd $SERVERLESS_PROJECT_PATH
+# cdk init app --language typescript # not needed since the folder already has files
+npm install
+rm -rf node_modules/sharp
+SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm install --arch=x64 --platform=linux --libc=glibc sharp
+
+cdk deploy

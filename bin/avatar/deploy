@@ -1,0 +1,31 @@
+#! /usr/bin/bash
+set -e # stop if it fails at any point
+
+print_colored() {
+  green="\033[0;32m"
+  yellow="\033[0;33m"
+  red="\033[0;31m"
+  NO_COLOR='\033[0m'
+  if [ $1 == 'g' ]; then
+    color=$green
+  elif [ $1 == 'y' ]; then
+    color=$yellow
+  elif [ $1 == 'r' ]; then
+    color=$red
+  fi
+  LABEL=$2
+  printf "${color} ${LABEL}${NO_COLOR}\n"
+}
+
+print_colored g "Avatar CDK build, deploy and upload"
+
+ABS_PATH=$(readlink -f "$0")
+Avatar_PATH=$(dirname $ABS_PATH)
+
+print_colored r "This only works if your AWS account bootstrapped for your specific region"
+print_colored r "  - Make sure 'CDKToolkit' stack exists in your cloudformation console"
+print_colored r '  - Otherwise run: cdk bootstrap "aws://$AWS_ACCOUNT_ID/$AWS_DEFAULT_REGION" before proceeding'
+# cdk bootstrap "aws://$AWS_ACCOUNT_ID/$AWS_DEFAULT_REGION"
+
+bash "$Avatar_PATH/build"
+bash "$Avatar_PATH/upload"

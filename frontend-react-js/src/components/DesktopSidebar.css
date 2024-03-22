@@ -10,6 +10,15 @@ section footer {
   padding: 12px;
 }
 
+.section .profile-avatar{
+  background: rgb(149,0,255);
+  height: 60px;
+  width: 60px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  display: block;
+}
+
 section footer a {
   text-decoration: none;
   color: rgba(255,255,255,0.5);

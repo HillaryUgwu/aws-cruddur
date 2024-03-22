@@ -22,11 +22,9 @@ tasks:
       sudo ./aws/install
       cd $THEIA_WORKSPACE_ROOT
     command: |
-      ruby "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env"
-      ruby "$THEIA_WORKSPACE_ROOT/bin/frontend/generate-env"
-      bash "$THEIA_WORKSPACE_ROOT/bin/ecr/login"
-      export GITPOD_IP=$(curl ifconfig.me)
-      source "$THEIA_WORKSPACE_ROOT/bin/rds/update-sg-rule"
+      export WORKSPACE_ROOT_PATH=$THEIA_WORKSPACE_ROOT && gp env WORKSPACE_ROOT_PATH=$THEIA_WORKSPACE_ROOT
+      export WORKSPACE_IP=$(curl ifconfig.me)
+      bash "$THEIA_WORKSPACE_ROOT/bin/bootstrap"
   
   - name: postgres
     before: |
@@ -38,13 +36,11 @@ tasks:
 
   - name: react-js
     command: |
-      ruby "$THEIA_WORKSPACE_ROOT/bin/frontend/generate-env"
       cd frontend-react-js
       npm i
 
   - name: flask
     command: |
-      ruby "$THEIA_WORKSPACE_ROOT/bin/backend/generate-env"
       cd backend-flask
       pip install -r requirements.txt
 
@@ -66,7 +62,7 @@ vscode:
   extensions:
     - 42Crunch.vscode-openapi
     - cweijan.vscode-postgresql-client2
-
+    # - gp validate
     - ms-vscode.Theme-PredawnKit
 
 ports:

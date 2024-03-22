@@ -20,6 +20,15 @@
   background: var(--fg);
 }
 
+.activity_content .profile-avatar{
+  background: rgb(149,0,255);
+  height: 60px;
+  width: 60px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  display: block;
+}
+
 .acitivty_main {
   padding: 16px;
 }

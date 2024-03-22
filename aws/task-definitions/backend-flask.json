@@ -1,7 +1,7 @@
 {
     "family": "backend-flask",
     "executionRoleArn": "arn:aws:iam::767398112680:role/CruddurServiceExecutionRole",
-    "taskRoleArn": "arn:aws:iam::767398112680:role/CruddurTaskRole",
+    "taskRoleArn": "arn:aws:iam::767398112680:role/CruddurServiceTaskRole",
     "networkMode": "awsvpc",
     "cpu": "256",
     "memory": "512",
@@ -55,13 +55,13 @@
         "environment": [
           {"name": "OTEL_SERVICE_NAME", "value": "backend-flask"},
           {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "https://api.honeycomb.io"},
-          {"name": "AWS_COGNITO_USER_POOL_ID", "value": "us-east-1_NYqgy36KW"},
-          {"name": "AWS_COGNITO_USER_POOL_CLIENT_ID", "value": "711fk6g69nnmvehvd1gtt4r7r1"},
           {"name": "FRONTEND_URL", "value": "https://ohary37.com"},
           {"name": "BACKEND_URL", "value": "https://api.ohary37.com"},
           {"name": "AWS_DEFAULT_REGION", "value": "us-east-1"}
         ],
         "secrets": [
+          {"name": "AWS_COGNITO_USER_POOL_ID"    , "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/cognito-user-pool-id"},
+          {"name": "AWS_COGNITO_USER_POOL_CLIENT_ID", "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/cognito-client-id"},
           {"name": "AWS_ACCESS_KEY_ID"    , "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID"},
           {"name": "AWS_SECRET_ACCESS_KEY", "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY"},
           {"name": "CONNECTION_URL"       , "valueFrom": "arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/CONNECTION_URL" },

@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 set -e # Stop execution of the script if it fails
 
-CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/networking/template.yaml"
-CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/networking/config.toml"
+CFN_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/networking/template.yaml"
+CONFIG_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/networking/config.toml"
 
 cfn-lint $CFN_PATH
 
@@ -23,3 +23,18 @@ aws s3 mb "s3://$BUCKET"
 aws s3 mb "s3://codepipeline-$BUCKET"
 aws ssm put-parameter --name /cruddur/ArtifactBucketName --type String --value "$BUCKET" --overwrite
 aws ssm put-parameter --name /AcmCertificateArn --type String --value "$CertificateArn" --overwrite
+
+# Setup Alarm and billing configuration
+aws sns create-topic --name billing-alarm
+
+aws sns subscribe \
+    --topic-arn TopicARN \
+    --protocol email \
+    --notification-endpoint ohary37@email.com
+
+aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm-config.json
+
+aws budgets create-budget \
+    --account-id $AWS_ACCOUNT_ID \
+    --budget file://aws/json/budget.json \
+    --notifications-with-subscribers file://aws/json/budget-notifications-with-subscribers.json

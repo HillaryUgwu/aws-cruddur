@@ -12,28 +12,29 @@ Parameters:
   ClientName:
     Type: String
     Default: Cruddur
-  # LambdaPath:
-  #   Type: String
-  #   Default: /workspace/aws-bootcamp-cruddur-2023/aws/lambdas
-  ConnectionURL:
-    Type: String
-    # Default: "{{resolve:ssm-secure:cruddur/backend-flask/CONNECTION_URL}}"
-    Default: 'arn:aws:ssm:us-east-1:767398112680:parameter/cruddur/backend-flask/CONNECTION_URL'
   LambdaFunctionName:
     Type: String
     Default: cruddur-post-confirmation
   BucketName:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /cruddur/ArtifactBucketName
+  ConnectionURL:
+   Type: AWS::SSM::Parameter::Value<String>
+   Default: /cruddur/backend-flask/CONNECTION_URL
+  NetworkingStack:
+    Type: String
+    Description: This is the base layer of networking components eg. VPC, Subnets
+    Default: CrudNet
+  CrudDBStack:
+    Type: String
+    Description: This is the DB stack
+    Default: CrudDb
 
 Resources:
   CruddurUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: !Ref UserPoolName
-      # SignInAliases:
-      #   Email: true
-      # MfaConfiguration: False
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
@@ -47,19 +48,19 @@ Resources:
           AttributeDataType: String
           Mutable: true
           Required: true
+        - Name: email
+          AttributeDataType: String
+          Mutable: true
+          Required: true
         - Name: name
           AttributeDataType: String
           Mutable: true
           Required: true
-      # EmailVerificationMessage: "Your verification code is {####}."
-      # EmailVerificationSubject: "Your verification code"
       LambdaConfig:
         PostConfirmation: !GetAtt cruddurpostconfirmation.Arn
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
-      UserPoolAddOns:
-        AdvancedSecurityMode: 'Enabled'
-      # DeletionPolicy: Retain
+      DeletionProtection: ACTIVE
 
   CruddurAppClient:
     Type: AWS::Cognito::UserPoolClient
@@ -85,9 +86,35 @@ Resources:
                 - lambda.amazonaws.com
             Action:
               - sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+          - Effect: Allow
+            Principal:
+              Service:
+                - cognito-idp.amazonaws.com
+            Action:
+              - sts:AssumeRole
+            Condition:
+              ArnLike:
+                "AWS:SourceArn": !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
+      Policies:
+        - PolicyName: AWSLambdaBasicExecutionRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*"
+              - Effect: Allow
+                Action:
+                  - ec2:CreateNetworkInterface
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:DeleteNetworkInterface
+                Resource: "*"
 
   cruddurpostconfirmation:
     Type: AWS::Lambda::Function
@@ -103,55 +130,49 @@ Resources:
         Size: 512
       Code:
         S3Bucket: !Ref BucketName
-        S3Key:  "/cognito/lambda_function.zip"
+        S3Key:  "lambdas/cognito/lambda_function.zip"
+      Layers:
+        - !Sub "arn:aws:lambda:${AWS::Region}:898466741470:layer:psycopg2-py38:2"
       Environment:
         Variables:
-          CONNECTION_URL: !Ref ConnectionURL
+          CONNECTION_URL: !Ref ConnectionURL      
       Role: !GetAtt LambdaExecutionRole.Arn
-      # EventInvokeConfig:
-      #   MaximumEventAgeInSeconds: 21600
-      #   MaximumRetryAttempts: 2
-      # PackageType: Zip
-      # Policies:
-      #   - Statement:
-      #       - Effect: Allow
-      #         Action:
-      #           - logs:CreateLogGroup
-      #         Resource: arn:aws:logs:us-east-1:767398112680:*
-      #       - Effect: Allow
-      #         Action:
-      #           - logs:CreateLogStream
-      #           - logs:PutLogEvents
-      #         Resource:
-      #           - >-
-      #             arn:aws:logs:us-east-1:767398112680:log-group:/aws/lambda/cruddur-post-confirmation:*
       SnapStart:
         ApplyOn: None
       RuntimeManagementConfig:
         UpdateRuntimeOn: Auto
-      # VpcConfig:
-      #   SecurityGroupIds:
-      #       Fn::ImportValue:
-      #         !Sub ${ClusterStack}ServiceSecurityGroupId
-      #   SubnetIds: { 'Fn::Split' : [ ','  , { "Fn::ImportValue": { "Fn::Sub": "${NetworkingStack}PublicSubnetIds" }}] }
-      #   VpcId:
-      #     Fn::ImportValue:
-      #       !Sub ${NetworkingStack}VpcId
+      VpcConfig:
+        SecurityGroupIds:
+          - !GetAtt CognitoLambdaSG.GroupId
+        SubnetIds: { 'Fn::Split' : [ ','  , { "Fn::ImportValue": { "Fn::Sub": "${NetworkingStack}PublicSubnetIds" }}] }
         
-  # CruddurPostConfirmationLambdaFunction:
-  #   Type: AWS::Lambda::Function
-  #   Properties:
-  #     CodeUri: !Ref lambda_path
-  #     LambdaFunctionName: cruddur-post-confirmation
-  #     Role: !GetAtt LambdaExecutionRole.Arn
-  #     Runtime: python3.10
-  #     Handler: index.handler # Specify the handler
-  #     VpcConfig:
-  #       SecurityGroupIds:
-  #         - sg-085912345678492fb
-  #       SubnetIds:
-  #         - subnet-071f712345678e7c8
-  #         - subnet-07fd123456788a036
+  CognitoLambdaSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Lambda function
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
+
+  RDSDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Fn::ImportValue:
+          !Sub ${CrudDBStack}ServiceSecurityGroupId
+      IpProtocol: tcp
+      FromPort: 5432
+      ToPort: 5432
+      Description: COGNITOPOSTCONF
+      SourceSecurityGroupId: !GetAtt CognitoLambdaSG.GroupId
+
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt cruddurpostconfirmation.Arn
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt CruddurUserPool.Arn
 
   UserPoolIdSSMParameter:
     Type: AWS::SSM::Parameter

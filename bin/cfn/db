@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 set -e # stop the execution of the script if it fails
 
-CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/db/template.yaml"
-CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/db/config.toml"
+CFN_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/db/template.yaml"
+CONFIG_PATH="$WORKSAPCE_ROOT_PATH/aws/cfn/db/config.toml"
 
 cfn-lint $CFN_PATH
 
@@ -16,5 +16,5 @@ aws cloudformation deploy \
   --template-file "$CFN_PATH" \
   --no-execute-changeset \
   --tags group=cruddur-db \
-  --parameter-overrides $PARAMETERS MasterUserPassword=$DB_PASSWORD \
+  --parameter-overrides $PARAMETERS MasterUserPassword="" \
   --capabilities CAPABILITY_NAMED_IAM
