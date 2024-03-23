@@ -2,7 +2,10 @@
 
 # name: Getting started
 cd $CODESPACE_VSCODE_FOLDER/..
-export WORKSAPCE_ROOT_PATH=$CODESPACE_VSCODE_FOLDER
+bash "$CODESPACE_VSCODE_FOLDER/bin/init-envars"
+echo "export WORKSAPCE_ROOT_PATH='$CODESPACE_VSCODE_FOLDER'" >> ~/.envar
+echo "export WORKSPACE_NAME_ID='$CODESPACE_NAME'" >> ~/.envar
+echo "export WORKSPACE_HOST_PORT='$GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN'" >> ~/.envar
 bash $CODESPACE_VSCODE_FOLDER/bin/bootstrap
 
 # name: postgres

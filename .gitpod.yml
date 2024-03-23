@@ -22,7 +22,10 @@ tasks:
       sudo ./aws/install
       cd $THEIA_WORKSPACE_ROOT
     command: |
-      export WORKSPACE_ROOT_PATH=$THEIA_WORKSPACE_ROOT && gp env WORKSPACE_ROOT_PATH=$THEIA_WORKSPACE_ROOT
+      bash "$THEIA_WORKSPACE_ROOT/bin/init-envars"
+      echo "export WORKSAPCE_ROOT_PATH='$THEIA_WORKSPACE_ROOT'" >> ~/.envar
+      echo "export WORKSPACE_NAME_ID='$GITPOD_WORKSPACE_ID'" >> ~/.envar
+      echo "export WORKSPACE_HOST_PORT='$GITPOD_WORKSPACE_CLUSTER_HOST'" >> ~/.envar
       export WORKSPACE_IP=$(curl ifconfig.me)
       bash "$THEIA_WORKSPACE_ROOT/bin/bootstrap"
   

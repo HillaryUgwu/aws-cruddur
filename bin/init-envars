@@ -1,0 +1,19 @@
+#!/bin/bash
+
+touch ~/.envar
+echo "#!/bin/bash" >> ~/.envar
+echo "export WORKSAPCE_ROOT_PATH='$CODESPACE_VSCODE_FOLDER'" >> ~/.envar
+echo "export WORKSPACE_NAME_ID='$CODESPACE_NAME'" >> ~/.envar
+echo "export WORKSPACE_HOST_PORT='$GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN'" >> ~/.envar
+chmod u+x ~/.envar
+
+# Define the code to be added to bashrc
+envarToBashrc='
+# ~/.envar
+if [ -f ~/.envar ]; then
+    source ~/.envar
+fi
+'
+
+# Append the code to the .bashrc file
+echo "$envarToBashrc" >> ~/.bashrc

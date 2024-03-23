@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'erb'
+
+# Check if a filename was provided as an argument
+if ARGV.length < 1
+ puts "Usage: #{$0} <filename>"
+ exit 1
+end
+
+# Use the first argument as the filename
+filename = ARGV[0]
+
+# Construct the template path using the provided filename
+template_path = "erb/#{filename}.erb"
+
+# Read the template file
+template = File.read(template_path)
+
+# Process the template
+content = ERB.new(template).result(binding)
+
+# Write the processed content to the output file
+File.write(filename, content)

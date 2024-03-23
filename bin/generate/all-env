@@ -1,0 +1,61 @@
+#!/bin/bash
+
+source ~/.envar
+
+ABS_PATH=$(readlink -f "$0")
+GEN_DIR=$(dirname $ABS_PATH)
+
+if [ "$1" = "prod" ]; then
+    echo "Running in production mode"
+    URL=$PROD_CONNECTION_URL
+else
+    URL=$CONNECTION_URL
+    echo "Running in development mode"
+fi
+
+backend_env_name=backend-flask.env
+frontend_env_name=frontend-react-js.env
+sync_env_name=sync.env
+
+
+ruby $GEN_DIR/ruby-env $backend_env_name
+ruby $GEN_DIR/ruby-env $frontend_env_name
+ruby $GEN_DIR/ruby-env $sync_env_name
+
+WORKSPACE_PATH="$WORKSPACE_NAME_ID.$WORKSPACE_HOST_PORT"
+FRONTEND_URL="https://3000-$WORKSPACE_PATH"
+BACKEND_URL="https://4567-$WORKSPACE_PATH"
+XRAY_URL="*4567-$WORKSPACE_PATH*"
+AWS_COGNITO_USER_POOL_ID=$(aws ssm get-parameter --name /cruddur/cognito-user-pool-id --query "Parameter.Value" --with-decryption --output text)
+AWS_COGNITO_CLIENT_ID=$(aws ssm get-parameter --name /cruddur/cognito-client-id --query "Parameter.Value" --with-decryption --output text)
+# SYNC_CLOUDFRONT_DISTRUBTION_ID=$(aws ssm get-parameter --name /cruddur/sync-cloudfront-distribution-id --query "Parameter.Value" --with-decryption --output text)
+# API_GATEWAY_ENDPOINT_URL=$(aws ssm get-parameter --name /cruddur/api-gateway-endpoint-url --query "Parameter.Value" --with-decryption --output text)
+SYNC_CLOUDFRONT_DISTRUBTION_ID="E3EEYRFQBTGWIM"
+API_GATEWAY_ENDPOINT_URL=$API_GATEWAY_ENDPOINT_URL
+
+cat << remaining_env_backend >> "$WORKSAPCE_ROOT_PATH/$backend_env_name"
+
+CONNECTION_URL=$URL
+FRONTEND_URL=$FRONTEND_URL
+BACKEND_URL=$BACKEND_URL
+AWS_XRAY_URL=$XRAY_URL
+AWS_COGNITO_USER_POOL_ID=$AWS_COGNITO_USER_POOL_ID
+AWS_COGNITO_USER_POOL_CLIENT_ID=$AWS_COGNITO_CLIENT_ID
+remaining_env_backend
+
+cat << remaining_env_frontend >> "$WORKSAPCE_ROOT_PATH/$frontend_env_name"
+
+REACT_APP_BACKEND_URL=$FRONTEND_URL
+REACT_APP_FRONTEND_URL=$BACKEND_URL
+REACT_APP_API_GATEWAY_ENDPOINT_URL=$API_GATEWAY_ENDPOINT_URL
+REACT_APP_AWS_USER_POOLS_ID=$AWS_COGNITO_USER_POOL_ID
+REACT_APP_CLIENT_ID=$AWS_COGNITO_CLIENT_ID
+remaining_env_frontend
+
+
+cat << EOF >> "$WORKSAPCE_ROOT_PATH/$sync_env_name"
+
+SYNC_CLOUDFRONT_DISTRUBTION_ID=$SYNC_CLOUDFRONT_DISTRUBTION_ID
+SYNC_BUILD_DIR=$WORKSAPCE_ROOT_PATH/frontend-react-js/build
+SYNC_OUTPUT_CHANGESET_PATH=$WORKSAPCE_ROOT_PATH/tmp/changeset.json
+EOF
