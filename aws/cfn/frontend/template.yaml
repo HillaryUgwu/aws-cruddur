@@ -195,4 +195,4 @@ Resources:
         Name: '/cruddur/sync-cloudfront-distribution-id'
         Type: 'String'
         Value: !Ref Distribution
-        Description: 'CloudFront Distribution ID for Cruddur's frontend React Js (ohary webdomain)'
+        Description: 'CloudFront Distribution ID for Cruddur frontend React Js (ohary webdomain)'

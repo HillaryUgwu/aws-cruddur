@@ -29,9 +29,7 @@ XRAY_URL="*4567-$WORKSPACE_PATH*"
 AWS_COGNITO_USER_POOL_ID=$(aws ssm get-parameter --name /cruddur/cognito-user-pool-id --query "Parameter.Value" --with-decryption --output text)
 AWS_COGNITO_CLIENT_ID=$(aws ssm get-parameter --name /cruddur/cognito-client-id --query "Parameter.Value" --with-decryption --output text)
 SYNC_CLOUDFRONT_DISTRUBTION_ID=$(aws ssm get-parameter --name /cruddur/sync-cloudfront-distribution-id --query "Parameter.Value" --with-decryption --output text)
-# API_GATEWAY_ENDPOINT_URL=$(aws ssm get-parameter --name /cruddur/api-gateway-endpoint-url --query "Parameter.Value" --with-decryption --output text)
-# SYNC_CLOUDFRONT_DISTRUBTION_ID="E3EEYRFQBTGWIM"
-API_GATEWAY_ENDPOINT_URL=$API_GATEWAY_ENDPOINT_URL
+API_GATEWAY_ENDPOINT_URL=$(aws ssm get-parameter --name /cruddur/api-gateway-invoke-url --query "Parameter.Value" --with-decryption --output text)
 
 cat << remaining_env_backend >> "$WORKSAPCE_ROOT_PATH/$backend_env_name"
 

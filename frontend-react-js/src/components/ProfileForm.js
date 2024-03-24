@@ -95,6 +95,8 @@ export default function ProfileForm(props) {
         props.setPopped(false)
       }
     })
+
+    window.location.reload();
   }
 
   const bio_onchange = (event) => {
@@ -140,7 +142,7 @@ export default function ProfileForm(props) {
             <div className="field bio">
               <label>Bio</label>
               <textarea
-                placeholder="Bio"
+                placeholder="Enter your bio description here..."
                 value={bio}
                 onChange={bio_onchange} 
               />

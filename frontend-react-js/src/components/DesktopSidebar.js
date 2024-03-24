@@ -26,8 +26,9 @@ export default function DesktopSidebar(props) {
         "handle": props.user.handle
       }
     ]
-    // console.log('suggested user props',props,users)
+    console.log('suggested user props',props,users)
     suggested = <SuggestedUsersSection users={users} />
+    // <ProfileAvatar id={props.user.handle} />
   }
   let join;
   if (props.user) {
@@ -40,7 +41,6 @@ export default function DesktopSidebar(props) {
       <Search />
       {trending}
       {suggested}
-      <ProfileAvatar id={props.users.handle} />
       {join}
       <footer>
         <a href="/about">About</a>
