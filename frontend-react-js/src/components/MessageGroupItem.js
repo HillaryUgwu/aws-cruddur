@@ -18,7 +18,7 @@ export default function MessageGroupItem(props) {
   return (
     <Link className={classes()} to={`/messages/` + props.message_group.uuid}>
       {/* <div className='message_group_avatar'></div> */}
-      <ProfileAvatar id={props.message_group.cognito_user_uuid} />
+      <ProfileAvatar id={props.message_group.handle} />
       <div className='message_content'>
         <div classsName='message_group_meta'>
           <div className='message_group_identity'>

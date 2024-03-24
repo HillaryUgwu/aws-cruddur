@@ -1,6 +1,5 @@
 SELECT
   activities.uuid,
-  users.cognito_user_id as cognito_user_uuid,
   users.display_name,
   users.handle,
   activities.message,

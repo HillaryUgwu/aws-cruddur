@@ -188,3 +188,11 @@ Resources:
         #   - ErrorCode: 403
         #     ResponseCode: 200
             # ResponsePagePath: /index.html
+
+  SsmDistributionID:
+      Type: 'AWS::SSM::Parameter'
+      Properties:
+        Name: '/cruddur/sync-cloudfront-distribution-id'
+        Type: 'String'
+        Value: !Ref Distribution
+        Description: 'CloudFront Distribution ID for Cruddur's frontend React Js (ohary webdomain)'

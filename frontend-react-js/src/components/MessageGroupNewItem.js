@@ -7,7 +7,7 @@ export default function MessageGroupNewItem(props) {
 
     <Link className='message_group_item active' to={`/messages/new/` + props.user.handle}>
       {/* <div className='message_group_avatar'></div> */}
-      <ProfileAvatar id={props.user.cognito_user_uuid} />
+      <ProfileAvatar id={props.user.handle} />
       <div className='message_content'>
         <div classsName='message_group_meta'>
           <div className='message_group_identity'>

@@ -7,11 +7,11 @@ import ProfileAvatar from 'components/ProfileAvatar'
 
 export default function DesktopSidebar(props) {
   const trendings = [
-    {"hashtag": "100DaysOfCloud", "count": 2053 },
-    {"hashtag": "CloudProject", "count": 8253 },
-    {"hashtag": "AWS", "count": 9053 },
-    {"hashtag": "FreeWillyReboot", "count": 7753 }
-  ]  
+    { "hashtag": "100DaysOfCloud", "count": 2053 },
+    { "hashtag": "CloudProject", "count": 8253 },
+    { "hashtag": "AWS", "count": 9053 },
+    { "hashtag": "FreeWillyReboot", "count": 7753 }
+  ]
 
   let trending;
   if (props.user) {
@@ -22,9 +22,8 @@ export default function DesktopSidebar(props) {
   if (props.user) {
     const users = [
       {
-        "cognito_user_uuid": props.user.cognito_user_uuid, 
-        "display_name": props.user.display_name, 
-        "handle":  props.user.handle
+        "display_name": props.user.display_name,
+        "handle": props.user.handle
       }
     ]
     // console.log('suggested user props',props,users)
@@ -41,7 +40,7 @@ export default function DesktopSidebar(props) {
       <Search />
       {trending}
       {suggested}
-      {/* <ProfileAvatar id={props.users.cognito_user_uuid} /> */}
+      <ProfileAvatar id={props.users.handle} />
       {join}
       <footer>
         <a href="/about">About</a>
