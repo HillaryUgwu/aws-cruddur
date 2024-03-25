@@ -3,7 +3,6 @@ import Search from '../components/Search';
 import TrendingSection from '../components/TrendingsSection'
 import SuggestedUsersSection from '../components/SuggestedUsersSection'
 import JoinSection from '../components/JoinSection'
-import ProfileAvatar from 'components/ProfileAvatar'
 
 export default function DesktopSidebar(props) {
   const trendings = [
@@ -18,18 +17,23 @@ export default function DesktopSidebar(props) {
     trending = <TrendingSection trendings={trendings} />
   }
 
+  const handle = props.user ? props.user.handle : 'undefined';
+  const displayName = props.user ? props.user.display_name : 'undefined';
+
   let suggested;
-  if (props.user) {
-    const users = [
-      {
-        "display_name": props.user.display_name,
-        "handle": props.user.handle
-      }
-    ]
-    console.log('suggested user props',props,users)
-    suggested = <SuggestedUsersSection users={users} />
-    // <ProfileAvatar id={props.user.handle} />
-  }
+  const users = [
+    {
+      "display_name": "Hillary Ugwu",
+      "handle": "ohahuru"
+   },
+    {
+       "display_name": displayName,
+       "handle": handle
+    }
+   ];
+
+  suggested = <SuggestedUsersSection users={users} />
+
   let join;
   if (props.user) {
   } else {

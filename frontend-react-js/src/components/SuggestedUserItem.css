@@ -30,11 +30,12 @@
   color: rgba(255,255,255,0.5)
 }
 
-.suggested_users .avatar {
+.suggested_users .profile-avatar{
   background: rgb(149,0,255);
   height: 36px;
   width: 36px;
   border-radius: 999px;
   flex-shrink: 0;
+  display: block;
   margin-right: 12px;
 }
