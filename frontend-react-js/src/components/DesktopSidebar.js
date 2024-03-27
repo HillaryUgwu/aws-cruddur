@@ -23,13 +23,13 @@ export default function DesktopSidebar(props) {
   let suggested;
   const users = [
     {
-      "display_name": "Hillary Ugwu",
-      "handle": "ohahuru"
+      "display_name": handle === "undefined" ? "Emeka" : displayName,
+      "handle":  handle === "undefined" ?  "altlary" : handle
    },
     {
-       "display_name": displayName,
-       "handle": handle
-    }
+      "display_name": handle === "ohahuru" ? "Emeka" : "Hillary",
+      "handle":  handle === "ohahuru" ?  "altlary" : "ohahuru"
+   }
    ];
 
   suggested = <SuggestedUsersSection users={users} />
