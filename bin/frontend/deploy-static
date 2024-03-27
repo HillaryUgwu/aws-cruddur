@@ -20,4 +20,6 @@ bash "$BIN_PATH/bootstrap"
 bash "$FRONTEND_PATH/static-build"
 ruby "$FRONTEND_PATH/sync"
 
+CONNECTION_URL=$PROD_CONNECTION_URL python "$BIN_PATH/db/migrate"
+
 # bash $BIN_PATH/print_colored y "Consider running the 'export' command directly on the terminal if you want the variables to persist for the current shell seesion"
