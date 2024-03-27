@@ -11,6 +11,11 @@ This is the starting codebase that will be used in the FREE AWS Cloud Project Bo
 
 ![Cruddur Screenshot](_docs/assets/cruddur-screenshot.png)
 
+Architecture
+The architecture of the project is described in the below diagram:
+![final_architecture-diagram](https://github.com/HillaryUgwu/aws-bootcamp-cruddur-2023/assets/29102246/657a12e8-e6b6-444f-b900-4ab82bce4568)
+
+
 ## Instructions
 
 At the start of the bootcamp you need to create a new Github Repository from this template.
