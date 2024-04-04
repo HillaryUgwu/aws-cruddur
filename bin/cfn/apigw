@@ -16,7 +16,7 @@ zip_upload(){
   pushd $FILE_PATH/cfn/apigw/$1/
   if [ "$1" = "cruddur-upload-avatar" ]; then
     rm -rf $FILE_PATH/cfn/apigw/$1/Gem*
-    bundle init && echo "gem 'ox'" >> Gemfile && echo "gem 'jwt'" >> Gemfile
+    bundle init && echo "gem 'ox'" >> Gemfile
     bundle lock --add-platform x86_64-linux
     bundle config set --local deployment 'true' && bundle install
   fi

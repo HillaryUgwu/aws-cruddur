@@ -2,7 +2,7 @@
   display: flex;
   align-items: flex-start;
   overflow: hidden;
-  border-bottom: solid 1px rgb(31,36,49);
+  border-bottom: solid 1px rgb(31, 36, 49);
   padding: 16px;
 }
 
@@ -12,7 +12,7 @@
 }
 
 .message_item:hover {
-background: rgba(255,255,255,0.08)
+  background: rgba(255, 255, 255, 0.08)
 }
 
 .message_item:last-child {
@@ -24,13 +24,13 @@ background: rgba(255,255,255,0.08)
   padding-left: 12px;
 }
 
-.message_item .message_avatar {
-  background: rgb(149,0,255);
-  height: 50px;
-  width: 50px;
+.message_item .profile-avatar {
+  background: rgb(149, 0, 255);
+  height: 60px;
+  width: 60px;
   border-radius: 999px;
   flex-shrink: 0;
-  margin-right: 8px;
+  display: block;
 }
 
 .message_item .message_meta {
@@ -49,13 +49,13 @@ background: rgba(255,255,255,0.08)
   color: #fff;
 }
 
-.message_item  .message_identity .handle {
-  color: rgb(255,255,255,0.5);
+.message_item .message_identity .handle {
+  color: rgb(255, 255, 255, 0.5);
 }
 
 
 .message_item .created_at {
-  color: rgb(72,77,95);
+  color: rgb(72, 77, 95);
   font-size: 14px;
 }
 

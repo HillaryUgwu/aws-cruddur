@@ -1,6 +1,5 @@
 require 'aws-sdk-s3'
 require 'json'
-require 'jwt'
 
 def handler(event:, context:)
   puts event
@@ -16,18 +15,13 @@ def handler(event:, context:)
       statusCode: 200
     }
   else
-    token = event['headers']['authorization'].split(' ')[1]
-    puts({step: 'presignedurl', access_token: token}.to_json)
-
     body_hash = JSON.parse(event["body"])
     extension = body_hash["extension"]
-
-    decoded_token = JWT.decode token, nil, false
-    cognito_user_uuid = decoded_token[0]['sub']
+    user_handle = body_hash["user_handle"]
 
     s3 = Aws::S3::Resource.new
     bucket_name = ENV["UPLOADS_BUCKET_NAME"]
-    object_key = "#{cognito_user_uuid}.#{extension}"
+    object_key = "#{user_handle}.#{extension}"
 
     puts({object_key: object_key}.to_json)
 

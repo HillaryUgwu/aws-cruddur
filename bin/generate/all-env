@@ -28,10 +28,8 @@ BACKEND_URL="https://4567-$WORKSPACE_PATH"
 XRAY_URL="*4567-$WORKSPACE_PATH*"
 AWS_COGNITO_USER_POOL_ID=$(aws ssm get-parameter --name /cruddur/cognito-user-pool-id --query "Parameter.Value" --with-decryption --output text)
 AWS_COGNITO_CLIENT_ID=$(aws ssm get-parameter --name /cruddur/cognito-client-id --query "Parameter.Value" --with-decryption --output text)
-# SYNC_CLOUDFRONT_DISTRUBTION_ID=$(aws ssm get-parameter --name /cruddur/sync-cloudfront-distribution-id --query "Parameter.Value" --with-decryption --output text)
-# API_GATEWAY_ENDPOINT_URL=$(aws ssm get-parameter --name /cruddur/api-gateway-endpoint-url --query "Parameter.Value" --with-decryption --output text)
-SYNC_CLOUDFRONT_DISTRUBTION_ID="E3EEYRFQBTGWIM"
-API_GATEWAY_ENDPOINT_URL=$API_GATEWAY_ENDPOINT_URL
+SYNC_CLOUDFRONT_DISTRUBTION_ID=$(aws ssm get-parameter --name /cruddur/sync-cloudfront-distribution-id --query "Parameter.Value" --with-decryption --output text)
+API_GATEWAY_ENDPOINT_URL=$(aws ssm get-parameter --name /cruddur/api-gateway-invoke-url --query "Parameter.Value" --with-decryption --output text)
 
 cat << remaining_env_backend >> "$WORKSAPCE_ROOT_PATH/$backend_env_name"
 
@@ -45,8 +43,8 @@ remaining_env_backend
 
 cat << remaining_env_frontend >> "$WORKSAPCE_ROOT_PATH/$frontend_env_name"
 
-REACT_APP_BACKEND_URL=$FRONTEND_URL
-REACT_APP_FRONTEND_URL=$BACKEND_URL
+REACT_APP_BACKEND_URL=$BACKEND_URL
+REACT_APP_FRONTEND_URL=$FRONTEND_URL
 REACT_APP_API_GATEWAY_ENDPOINT_URL=$API_GATEWAY_ENDPOINT_URL
 REACT_APP_AWS_USER_POOLS_ID=$AWS_COGNITO_USER_POOL_ID
 REACT_APP_CLIENT_ID=$AWS_COGNITO_CLIENT_ID

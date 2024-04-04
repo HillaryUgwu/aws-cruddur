@@ -16,13 +16,14 @@ export default function ProfileForm(props) {
   }, [props.profile])
 
   const s3uploadkey = async (extension)=> {
-    // console.log('extension',extension)
+    console.log('s3uploadkey props',props.profile.handle)
     try {
       const gateway_url = `${process.env.REACT_APP_API_GATEWAY_ENDPOINT_URL}/avatars/key_upload`
       console.log("gateway_url==========",gateway_url)
       await getAccessToken()
       const access_token = localStorage.getItem("access_token")
       const json = {
+        user_handle: props.profile.handle,
         extension: extension
       }
       const res = await fetch(gateway_url, {
@@ -78,13 +79,12 @@ export default function ProfileForm(props) {
 
   const onsubmit = async (event) => {
     event.preventDefault();
-    // event.persist()
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/profile/update`
     const payload_data = {
       bio: bio,
       display_name: displayName
     }
-    console.log('Profile form payload',url,payload_data)
+    
     put(url,payload_data,{
       auth: true,
       setErrors: setErrors,
@@ -94,6 +94,8 @@ export default function ProfileForm(props) {
         props.setPopped(false)
       }
     })
+
+    window.location.reload();
   }
 
   const bio_onchange = (event) => {
@@ -138,7 +140,7 @@ export default function ProfileForm(props) {
             <div className="field bio">
               <label>Bio</label>
               <textarea
-                placeholder="Bio"
+                placeholder="Enter your bio description here..."
                 value={bio}
                 onChange={bio_onchange} 
               />

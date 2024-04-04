@@ -2,7 +2,6 @@ SELECT
   (SELECT COALESCE(row_to_json(object_row),'{}'::json) FROM (
     SELECT
       activities.uuid,
-      users.cognito_user_id as cognito_user_uuid,
       users.display_name,
       users.handle,
       activities.message,
@@ -15,7 +14,6 @@ SELECT
   (SELECT COALESCE(array_to_json(array_agg(row_to_json(array_row))),'[]'::json) FROM (
   SELECT
     replies.uuid,
-    reply_users.cognito_user_id as cognito_user_uuid,
     reply_users.display_name,
     reply_users.handle,
     replies.message,
