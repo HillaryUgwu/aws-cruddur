@@ -20,7 +20,7 @@ export default function MessageGroupItem(props) {
       {/* <div className='message_group_avatar'></div> */}
       <ProfileAvatar id={props.message_group.handle} />
       <div className='message_content'>
-        <div classsName='message_group_meta'>
+        <div className='message_group_meta'>
           <div className='message_group_identity'>
             <div className='display_name'>{props.message_group.display_name}</div>
             <div className="handle">@{props.message_group.handle}</div>

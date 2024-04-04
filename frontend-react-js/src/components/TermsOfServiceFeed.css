@@ -1,0 +1,31 @@
+.terms_feed {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.terms_feed_primer {
+  font-size: 15px;
+  text-align: left;
+  padding: 16px;
+  color: #fff;
+  padding-top: 10px;
+}
+
+.terms_feed_collection {
+  display: flex;
+  flex-direction: column;
+}
+
+.terms_feed_heading {
+  padding: 16px;
+  padding-bottom: 16px;
+  border-bottom: solid 1px rgb(58,63,78);
+}
+
+.terms_feed_heading .title{
+  color: #fff;
+  font-weight: 800;
+  font-size: 20px;
+}

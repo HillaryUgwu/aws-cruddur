@@ -1,6 +1,9 @@
 import './App.css';
 import './components/Popup.css';
 
+import AboutFeedPage from './pages/AboutFeedPage';
+import TermsOfServiceFeedPage from './pages/TermsOfServiceFeedPage';
+import PrivacyFeedPage from './pages/PrivacyFeedPage';
 import HomeFeedPage from './pages/HomeFeedPage';
 import NotificationsFeedPage from './pages/NotificationsFeedPage';
 import UserFeedPage from './pages/UserFeedPage';
@@ -79,6 +82,18 @@ const router = createBrowserRouter([
   {
     path: "/forgot",
     element: <RecoverPage />
+  },
+  {
+    path: "/about",
+    element: <AboutFeedPage />
+  },
+  {
+    path: "/terms-of-service",
+    element: <TermsOfServiceFeedPage />
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyFeedPage />
   }
 ]);
 

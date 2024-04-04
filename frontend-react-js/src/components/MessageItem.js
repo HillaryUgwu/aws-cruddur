@@ -9,7 +9,7 @@ export default function MessageItem(props) {
       {/* <Link className='message_avatar' to={`/messages/@`+props.message.handle}></Link> */}
       <ProfileAvatar id={props.message.handle} />
       <div className='message_content'>
-        <div classsName='message_meta'>
+        <div className='message_meta'>
           <div className='message_identity'>
             <div className='display_name'>{props.message.display_name}</div>
             <div className="handle">@{props.message.handle}</div>
