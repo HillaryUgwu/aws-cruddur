@@ -1,4 +1,4 @@
-# FREE AWS Cloud Project Bootcamp
+# AWS Cruddur: A Cloud-based full stack application 
 
 ![](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiYlJ5MU1tNFMrc2dVQklIRm5PVDJTNUkvcmQ4c0RFRUg5dmhwUk1Nc3Q5dDVCeDVHVHhPbk5VRHoxQjRxSVNoWVFicnc5WExweFVjd3JzRWxLVGlMOWlRPSIsIml2UGFyYW1ldGVyU3BlYyI6IjJhdXc5cW5SNmV2eFoyOXkiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
 
@@ -46,7 +46,7 @@ The first version of the project was completed by partially clicking through the
 
 At the start of the bootcamp you need to create a new Github Repository from this template.
 
-## Journaling Homework
+## Journal
 
 The `/journal` directory contains
 
