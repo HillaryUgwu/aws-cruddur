@@ -1,10 +1,8 @@
 .activity_feed {
   display: flex;
   flex-direction: column;
-  /* overflow: hidden;
-  flex-shrink: 0; */
-  overflow: scroll;
-  flex-grow: 1;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .activity_feed_primer {

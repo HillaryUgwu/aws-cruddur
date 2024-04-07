@@ -6,10 +6,6 @@
 }
 
 .about_feed_primer {
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  flex-grow: 1;
   font-size: 15px;
   text-align: left;
   padding: 16px;
@@ -24,10 +20,6 @@
   padding: 0;
   overflow-wrap: break-word;
   word-wrap: break-word;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  flex-grow: 1;
 }
 
 .about_feed_collection {

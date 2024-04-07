@@ -15,6 +15,15 @@
   color: #fff;
 }
 
+.privacy_feed_primer section {
+  width: 100%; 
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
 .privacy_feed_collection {
   display: flex;
   flex-direction: column;
