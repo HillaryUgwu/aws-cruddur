@@ -1,8 +1,10 @@
 .privacy_feed {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  flex-shrink: 0;
+  /* overflow: hidden;
+  flex-shrink: 0; */
+  overflow: auto;
+  flex-grow: 1;
 }
 
 .privacy_feed_primer {

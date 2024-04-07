@@ -6,7 +6,6 @@ export default function MessageItem(props) {
   // console.log("MessageItem props", props)
   return (
     <div className='message_item'>
-      {/* <Link className='message_avatar' to={`/messages/@`+props.message.handle}></Link> */}
       <ProfileAvatar id={props.message.handle} />
       <div className='message_content'>
         <div className='message_meta'>

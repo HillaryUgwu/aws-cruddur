@@ -3,3 +3,40 @@ article {
     flex-direction: row;
     justify-content: center;
   }
+
+  body {
+    overflow: hidden; /* Prevent scrolling on the body */
+   }
+
+  .about.content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .about_feed {
+    flex-grow: 1;
+    overflow: auto;
+  }
+   
+   /* .about_feed {
+    overflow-y: auto;
+    scrollbar-width: thin; 
+    scrollbar-color: blue orange;
+   }
+   
+   .about_feed::-webkit-scrollbar {
+    width: 10px; 
+   }
+   
+   .about_feed::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+   }
+   
+   .about_feed::-webkit-scrollbar-thumb {
+    background: #888; 
+   }
+   
+   .about_feed::-webkit-scrollbar-thumb:hover {
+    background: #555;
+   } */
+   
