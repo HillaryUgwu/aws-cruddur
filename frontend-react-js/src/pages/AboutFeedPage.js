@@ -22,7 +22,7 @@ export default function AboutFeedPage() {
 
   return (
     <article>
-      <DesktopNavigation user={user} active={'home'} setPopped={setPopped} />
+      <DesktopNavigation user={user} active={'more'} setPopped={setPopped} />
       <div className='content'>
         <div className='about_feed'>
           <div className='about_feed_heading'>

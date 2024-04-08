@@ -1,0 +1,21 @@
+/* .dropdown {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+ } */
+
+.dropdown {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+ }
+ 
+ 
+ .menu-items:hover .dropdown,
+ .menu-items:focus-within .dropdown {
+  display: block;
+ }
+ 

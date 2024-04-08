@@ -21,7 +21,7 @@ export default function TermsOfServiceFeedPage() {
 
   return (
     <article>
-      <DesktopNavigation user={user} active={'home'} setPopped={setPopped} />
+      <DesktopNavigation user={user} active={'more'} setPopped={setPopped} />
       <div className='content'>
         <div className='terms_feed'>
           <div className='terms_feed_heading'>

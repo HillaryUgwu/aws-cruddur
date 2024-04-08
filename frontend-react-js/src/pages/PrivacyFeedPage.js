@@ -22,7 +22,7 @@ export default function PrivacyFeedPage() {
 
   return (
     <article>
-      <DesktopNavigation user={user} active={'home'} setPopped={setPopped} />
+      <DesktopNavigation user={user} active={'more'} setPopped={setPopped} />
       <div className='content'>
         <div className='privacy_feed'>
           <div className='privacy_feed_heading'>

@@ -1,0 +1,14 @@
+/* ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+ } */
+
+ .no-bullets {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  color: rgb(255, 255, 255, 0.5);
+  font-size: 20px;
+ }
+ 
