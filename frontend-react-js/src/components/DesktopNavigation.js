@@ -4,6 +4,8 @@ import {ReactComponent as Logo} from './svg/logo.svg';
 import DesktopNavigationLink from '../components/DesktopNavigationLink';
 import CrudButton from '../components/CrudButton';
 import ProfileInfo from '../components/ProfileInfo';
+import ContactSection from '../components/ContactSection'
+
 export default function DesktopNavigation(props) {
 
   let button;
@@ -11,6 +13,7 @@ export default function DesktopNavigation(props) {
   let notificationsLink;
   let messagesLink;
   let profileLink;
+  let contact;
   if (props.user) {
     button = <CrudButton setPopped={props.setPopped} />;
     profile = <ProfileInfo user={props.user} />;
@@ -30,7 +33,9 @@ export default function DesktopNavigation(props) {
       name="Profile"
       handle="profile"
       active={props.active} />
-  }
+  } 
+  
+  contact = <ContactSection/>
 
 
   return (
@@ -40,15 +45,18 @@ export default function DesktopNavigation(props) {
         name="Home"
         handle="home"
         active={props.active} />
+      {/* {homeLink} */}
       {notificationsLink}
       {messagesLink}
       {profileLink}
-      <DesktopNavigationLink url="/more" 
+      {/* {moreLink} */}
+      <DesktopNavigationLink url="/" 
         name="More" 
         handle="more"
         active={props.active} />
       {button}
       {profile}
+      {contact}
     </nav>
   );
 }

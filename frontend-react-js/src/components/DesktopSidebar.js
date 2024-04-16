@@ -2,6 +2,7 @@ import './DesktopSidebar.css';
 import Search from '../components/Search';
 import TrendingSection from '../components/TrendingsSection'
 import SuggestedUsersSection from '../components/SuggestedUsersSection'
+import ContactSection from '../components/ContactSection'
 import JoinSection from '../components/JoinSection'
 
 export default function DesktopSidebar(props) {
@@ -21,6 +22,7 @@ export default function DesktopSidebar(props) {
   const displayName = props.user ? props.user.display_name : 'undefined';
 
   let suggested;
+  let contact;
   const users = [
     {
       "display_name": handle === "undefined" ? "Emeka" : displayName,
@@ -34,6 +36,8 @@ export default function DesktopSidebar(props) {
 
   suggested = <SuggestedUsersSection users={users} />
 
+  contact = <ContactSection users={users} />
+
   let join;
   if (props.user) {
   } else {
@@ -43,6 +47,7 @@ export default function DesktopSidebar(props) {
   return (
     <section>
       <Search />
+      {/* {contact} */}
       {trending}
       {suggested}
       {join}
