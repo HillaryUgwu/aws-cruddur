@@ -26,7 +26,7 @@ tasks:
       echo "export WORKSAPCE_ROOT_PATH='$THEIA_WORKSPACE_ROOT'" >> ~/.envar
       echo "export WORKSPACE_NAME_ID='$GITPOD_WORKSPACE_ID'" >> ~/.envar
       echo "export WORKSPACE_HOST_PORT='$GITPOD_WORKSPACE_CLUSTER_HOST'" >> ~/.envar
-      export WORKSPACE_IP=$(curl ifconfig.me)
+      echo "export WORKSPACE_IP='$(curl ifconfig.me)'" >> ~/.envar
       bash "$THEIA_WORKSPACE_ROOT/bin/bootstrap"
   
   - name: postgres

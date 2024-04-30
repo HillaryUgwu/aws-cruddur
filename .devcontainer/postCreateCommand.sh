@@ -1,26 +1,16 @@
 #!/usr/bin/bash
 
 # name: Getting started
-pwd
-while [ -z "$CODESPACE_VSCODE_FOLDER" ]
-do
-  echo $CODESPACE_VSCODE_FOLDER
-  echo "/workspaces/${localWorkspaceFolderBasename}"
-  echo "Waiting for CODESPACE_VSCODE_FOLDER to be set..."
-  sleep 1
-done
-
-# name: Bootstrapping
-cd $CODESPACE_VSCODE_FOLDER
-bash "$CODESPACE_VSCODE_FOLDER/bin/init-envars"
-echo "export WORKSAPCE_ROOT_PATH='$CODESPACE_VSCODE_FOLDER'" >> ~/.envar
+echo "export WORKSPACE_ROOT_PATH='$(pwd)'" >> ~/.envar
 echo "export WORKSPACE_NAME_ID='$CODESPACE_NAME'" >> ~/.envar
 echo "export WORKSPACE_HOST_PORT='$GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN'" >> ~/.envar
-bash "$CODESPACE_VSCODE_FOLDER/bin/bootstrap"
-export WORKSPACE_IP=$(curl ifconfig.me)
+echo "export WORKSPACE_IP='$(curl ifconfig.me)'" >> ~/.envar
+source ~/.envar
+bash "$WORKSPACE_ROOT_PATH/bin/init-envars"
+bash "$WORKSPACE_ROOT_PATH/bin/bootstrap"
 
 # name: postgres
-cd $CODESPACE_VSCODE_FOLDER/..
+cd $WORKSPACE_ROOT_PATH/..
 echo "Installing Postgres"
 curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
 echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
@@ -52,7 +42,7 @@ gem install cfn-toml
 # name: cdk
 echo "Installing AWS CDK"
 npm install aws-cdk -g
-cd $CODESPACE_VSCODE_FOLDER/thumbing-serverless-cdk
+cd $WORKSPACE_ROOT_PATH/thumbing-serverless-cdk
 cp .env.example .env && npm i && cd ..
 
 # name: react-js
