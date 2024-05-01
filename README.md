@@ -13,7 +13,7 @@ This is the starting codebase that will be used in the FREE AWS Cloud Project Bo
 
 ## Architecture
 The architecture of the project is described in the below diagram:
-![final_architecture-diagram](https://github.com/HillaryUgwu/aws-bootcamp-cruddur-2023/assets/29102246/657a12e8-e6b6-444f-b900-4ab82bce4568)
+![final_architecture-diagram](https://github.com/HillaryUgwu/aws-cruddur/blob/main/_docs/assets/Cruddur%20architecture%20diagram.png)
 
 ## AWS services used
 
